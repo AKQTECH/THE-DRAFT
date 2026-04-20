@@ -15,19 +15,17 @@
 :root {
   --pink-header: #E668A7;
   --pink-text: #fcd7f1;
-  --body-bg: #e0adbe;
-  --body-text: #fcf6f2;
+  --accent-bg: #e0adbe;
+  --accent-text: #fcf6f2;
   --warm-black: #1C1410;
   --mauve-rose: #965b6d;
-  --warm-white: #fff2f1;
-  --deep-magenta: #8B0040;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--body-bg);
+  background: #ffffff;
   color: var(--warm-black);
   min-height: 100vh;
   min-height: 100dvh;
@@ -129,42 +127,20 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 20px 16px;
+  background: #ffffff;
 }
-.home-brand {
-  margin-bottom: 24px;
-}
-.home-label {
+.home-section-label {
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--body-text);
-  opacity: 0.7;
-  margin-bottom: 4px;
-}
-.home-title {
-  font-family: 'DM Sans', serif;
-  font-weight: 800;
-  font-size: 36px;
-  color: var(--body-text);
-  letter-spacing: -1px;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.home-title-tm-svg {
-  vertical-align: super;
-  margin-left: 2px;
-  margin-bottom: 8px;
-}
-.home-tagline {
-  font-size: 13px;
-  color: var(--body-text);
-  opacity: 0.7;
+  color: var(--mauve-rose);
+  margin-bottom: 12px;
 }
 
 .script-list { margin-bottom: 20px; }
 .script-card {
-  background: var(--warm-white);
+  background: var(--accent-bg);
   border-radius: 14px;
   padding: 16px;
   margin-bottom: 10px;
@@ -189,18 +165,18 @@ body {
 .script-name {
   font-size: 15px;
   font-weight: 700;
-  color: var(--warm-black);
+  color: var(--accent-text);
 }
 .script-meta {
   font-size: 12px;
-  color: var(--mauve-rose);
+  color: var(--accent-text);
+  opacity: 0.7;
   margin-top: 2px;
 }
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: var(--body-text);
-  opacity: 0.6;
+  color: var(--mauve-rose);
 }
 .empty-state p {
   font-size: 14px;
@@ -270,18 +246,19 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 8px 12px;
+  background: #ffffff;
 }
 .scene-item {
   display: flex;
   align-items: center;
   padding: 14px 10px;
-  border-bottom: 1px solid rgba(252,246,242,0.15);
+  border-bottom: 1px solid rgba(224,173,190,0.25);
   gap: 12px;
   cursor: pointer;
   transition: background 0.15s;
   border-radius: 8px;
 }
-.scene-item:active { background: rgba(252,246,242,0.1); }
+.scene-item:active { background: rgba(224,173,190,0.1); }
 .scene-num {
   width: 34px;
   height: 34px;
@@ -299,19 +276,19 @@ body {
 .scene-heading-text {
   font-size: 13px;
   font-weight: 700;
-  color: var(--body-text);
+  color: var(--warm-black);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: uppercase;
 }
 .scene-pages {
   font-size: 11px;
-  color: var(--body-text);
-  opacity: 0.6;
+  color: var(--mauve-rose);
   margin-top: 2px;
 }
 .scene-arrow {
-  opacity: 0.5;
+  opacity: 0.4;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -319,25 +296,26 @@ body {
 .scene-search-bar {
   padding: 12px;
   flex-shrink: 0;
+  background: #ffffff;
 }
 .scene-search-input {
   width: 100%;
   padding: 12px 16px;
   border-radius: 12px;
-  border: none;
-  background: var(--warm-white);
+  border: 2px solid var(--accent-bg);
+  background: #ffffff;
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   color: var(--warm-black);
   outline: none;
 }
+.scene-search-input:focus { border-color: var(--pink-header); }
 .scene-search-input::placeholder { color: var(--mauve-rose); }
 
 .no-script-msg {
   text-align: center;
   padding: 60px 24px;
-  color: var(--body-text);
-  opacity: 0.6;
+  color: var(--mauve-rose);
 }
 .no-script-msg p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
 
@@ -361,21 +339,22 @@ body {
 }
 .editor-scene-header {
   padding: 14px 16px 10px;
-  background: var(--warm-white);
+  background: var(--accent-bg);
   border-bottom: 3px solid var(--pink-header);
   flex-shrink: 0;
 }
 .editor-scene-title {
   font-size: 15px;
   font-weight: 800;
-  color: var(--warm-black);
+  color: var(--accent-text);
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 .editor-content {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: white;
+  background: #ffffff;
   padding: 16px;
 }
 .fdx-scene-heading {
@@ -429,35 +408,6 @@ body {
   margin-bottom: 10px;
 }
 
-.format-bar {
-  display: flex;
-  padding: 8px 10px;
-  gap: 4px;
-  background: var(--warm-white);
-  border-top: 1px solid rgba(28,20,16,0.06);
-  flex-shrink: 0;
-  overflow-x: auto;
-}
-.fmt-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 7px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  background: transparent;
-  color: var(--mauve-rose);
-  transition: all 0.15s;
-}
-.fmt-btn.active {
-  background: var(--pink-header);
-  color: var(--pink-text);
-}
-
 .no-scene-msg {
   text-align: center;
   padding: 60px 24px;
@@ -471,9 +421,10 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 16px;
+  background: #ffffff;
 }
 .export-option {
-  background: var(--warm-white);
+  background: var(--accent-bg);
   border-radius: 14px;
   padding: 16px;
   margin-bottom: 10px;
@@ -496,8 +447,8 @@ body {
   justify-content: center;
   flex-shrink: 0;
 }
-.export-title { font-size: 14px; font-weight: 700; color: var(--warm-black); }
-.export-desc { font-size: 11px; color: var(--mauve-rose); margin-top: 2px; }
+.export-title { font-size: 14px; font-weight: 700; color: var(--accent-text); }
+.export-desc { font-size: 11px; color: var(--accent-text); opacity: 0.7; margin-top: 2px; }
 .export-go-btn {
   display: block;
   width: 100%;
@@ -527,9 +478,10 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 16px;
+  background: #ffffff;
 }
 .settings-group {
-  background: var(--warm-white);
+  background: var(--accent-bg);
   border-radius: 14px;
   margin-bottom: 14px;
   overflow: hidden;
@@ -540,8 +492,7 @@ body {
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--body-text);
-  opacity: 0.7;
+  color: var(--mauve-rose);
   padding: 16px 16px 6px;
 }
 .settings-row {
@@ -549,17 +500,18 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(28,20,16,0.04);
+  border-bottom: 1px solid rgba(252,246,242,0.15);
 }
 .settings-row:last-child { border-bottom: none; }
 .settings-label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--warm-black);
+  color: var(--accent-text);
 }
 .settings-value {
   font-size: 13px;
-  color: var(--mauve-rose);
+  color: var(--accent-text);
+  opacity: 0.7;
   font-weight: 500;
 }
 .settings-btn {
@@ -576,17 +528,17 @@ body {
 .settings-about {
   text-align: center;
   padding: 24px 16px;
-  color: var(--body-text);
+  color: var(--mauve-rose);
 }
 .settings-version {
   font-size: 14px;
   font-weight: 700;
-  color: var(--body-text);
+  color: var(--mauve-rose);
   margin-bottom: 4px;
 }
 .settings-built {
   font-size: 12px;
-  color: var(--body-text);
+  color: var(--mauve-rose);
   opacity: 0.6;
 }
 
@@ -622,7 +574,7 @@ body {
   left: 50%;
   transform: translateX(-50%) translateY(20px);
   background: var(--warm-black);
-  color: var(--warm-white);
+  color: #ffffff;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -654,11 +606,7 @@ body {
   <!-- ===== HOME SCREEN ===== -->
   <div class="screen active" id="screen-home">
     <div class="home-content">
-      <div class="home-brand">
-        <div class="home-label">Your Scripts</div>
-        <div class="home-title">the draft<svg class="home-title-tm-svg" width="18" height="11" viewBox="0 0 18 11"><text x="0" y="9" font-family="'DM Sans', sans-serif" font-weight="700" font-size="9" fill="#fcf6f2" opacity="0.5">TM</text></svg></div>
-        <div class="home-tagline">Edit. Protect. Export.</div>
-      </div>
+      <div class="home-section-label">Your Scripts</div>
       <div class="script-list" id="scriptList"></div>
       <button class="import-btn" onclick="document.getElementById('fdx-file-input').click()">
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M10 14V3M6 7l4-4 4 4M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2"/></svg>
@@ -702,14 +650,6 @@ body {
         <p>Select a scene from the Scene Navigator to begin editing.</p>
       </div>
     </div>
-    <div class="format-bar">
-      <button class="fmt-btn active">Scene</button>
-      <button class="fmt-btn">Action</button>
-      <button class="fmt-btn">Char</button>
-      <button class="fmt-btn">Dialog</button>
-      <button class="fmt-btn">Paren</button>
-      <button class="fmt-btn">Trans</button>
-    </div>
   </div>
 
   <!-- ===== EXPORT ===== -->
@@ -729,8 +669,8 @@ body {
           </div>
         </div>
         <div class="export-option" onclick="selectExport(this, 'scene')">
-          <div class="export-icon" style="background: var(--body-bg);">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcf6f2" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><circle cx="10" cy="10" r="3"/></svg>
+          <div class="export-icon" style="background: var(--pink-header);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><circle cx="10" cy="10" r="3"/></svg>
           </div>
           <div>
             <div class="export-title">Single Scene</div>
@@ -738,8 +678,8 @@ body {
           </div>
         </div>
         <div class="export-option" onclick="selectExport(this, 'range')">
-          <div class="export-icon" style="background: var(--body-bg);">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcf6f2" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="4" y1="7" x2="16" y2="7"/><line x1="4" y1="13" x2="16" y2="13"/></svg>
+          <div class="export-icon" style="background: var(--pink-header);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="4" y1="7" x2="16" y2="7"/><line x1="4" y1="13" x2="16" y2="13"/></svg>
           </div>
           <div>
             <div class="export-title">Page Range</div>
@@ -804,7 +744,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.1</div>
+        <div class="settings-version">the draft v1.2</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -839,6 +779,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
+const APP_VERSION = '1.2';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -886,6 +827,22 @@ function navigateTo(screen) {
   document.getElementById('headerTitle').textContent = titles[screen] || '';
 }
 
+// ========== SCENE HEADING FORMATTER ==========
+function formatSceneHeading(raw) {
+  // Force uppercase
+  let h = raw.toUpperCase().trim();
+  // Normalize dashes: replace en-dash, em-dash, multiple dashes with single spaced dash
+  h = h.replace(/\s*[\u2013\u2014]+\s*/g, ' - ');
+  h = h.replace(/\s*-{2,}\s*/g, ' - ');
+  // Ensure single space around remaining dashes
+  h = h.replace(/\s*-\s*/g, ' - ');
+  // Fix common prefix issues: ensure "INT." or "EXT." have the period
+  h = h.replace(/^(INT|EXT|I\/E)\s/i, '$1. ');
+  // Ensure period after INT/EXT if missing
+  h = h.replace(/^(INT|EXT|I\/E)([^.])/i, '$1.$2');
+  return h;
+}
+
 // ========== FDX IMPORT ==========
 function handleFDXImport(event) {
   const file = event.target.files[0];
@@ -918,7 +875,7 @@ function handleFDXImport(event) {
       updateSceneNavigator();
       updateExportScreen();
       updateSettingsScreen();
-      showToast(script.title + ' imported — ' + script.scenes.length + ' scenes');
+      showToast(script.title + ' imported \u2014 ' + script.scenes.length + ' scenes');
       navigateTo('scenes');
     } catch(err) {
       console.error('FDX parse error:', err);
@@ -944,7 +901,7 @@ function parseFDX(xml, fileName, rawXml) {
     if (type === 'Scene Heading' && text.trim()) {
       if (currentScene) scenes.push(currentScene);
       currentScene = {
-        heading: text.trim(),
+        heading: formatSceneHeading(text.trim()),
         elements: [],
         startPage: pageCount + 1
       };
@@ -1030,10 +987,10 @@ function updateSceneNavigator() {
     <div class="scene-item" onclick="openScene(${i})">
       <div class="scene-num">${i + 1}</div>
       <div class="scene-info">
-        <div class="scene-heading-text">${s.heading}</div>
+        <div class="scene-heading-text">${escHtml(s.heading)}</div>
         <div class="scene-pages">pp. ${s.startPage}-${s.endPage}</div>
       </div>
-      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#fcd7f1" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
+      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#e0adbe" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
     </div>
   `).join('');
 }
@@ -1063,7 +1020,7 @@ function renderEditor() {
   scene.elements.forEach(el => {
     switch(el.type) {
       case 'Scene Heading':
-        html += `<div class="fdx-scene-heading">${escHtml(el.text)}</div>`;
+        html += `<div class="fdx-scene-heading">${escHtml(formatSceneHeading(el.text))}</div>`;
         break;
       case 'Action':
         html += `<div class="fdx-action">${escHtml(el.text)}</div>`;
@@ -1119,10 +1076,10 @@ function searchScenes(query) {
     <div class="scene-item" onclick="openScene(${item.index})">
       <div class="scene-num">${item.index + 1}</div>
       <div class="scene-info">
-        <div class="scene-heading-text">${item.scene.heading}</div>
+        <div class="scene-heading-text">${escHtml(item.scene.heading)}</div>
         <div class="scene-pages">pp. ${item.scene.startPage}-${item.scene.endPage}</div>
       </div>
-      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#fcd7f1" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
+      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#e0adbe" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
     </div>
   `).join('') || '<div class="no-script-msg"><p>No matching scenes.</p></div>';
 }
@@ -1154,7 +1111,6 @@ function handleExport() {
   if (!script) { showToast('No script loaded'); return; }
 
   if (appState.selectedExport === 'fdx') {
-    // Re-export original FDX
     if (script.rawXml) {
       const blob = new Blob([script.rawXml], { type: 'text/xml' });
       const url = URL.createObjectURL(blob);
@@ -1240,9 +1196,21 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// ========== SERVICE WORKER ==========
+// ========== SERVICE WORKER (with auto-update) ==========
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  navigator.serviceWorker.register('service-worker.js').then(reg => {
+    // Check for updates every time the app loads
+    reg.update();
+    // When a new SW is found and installed, reload to pick up changes
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'activated') {
+          window.location.reload();
+        }
+      });
+    });
+  }).catch(() => {});
 }
 
 // ========== START ==========

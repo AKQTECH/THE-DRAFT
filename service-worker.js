@@ -1,4 +1,4 @@
-const CACHE_NAME = 'the-draft-v1-1';
+const CACHE_NAME = 'the-draft-v1-2';
 const ASSETS = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
+  // Force this new SW to activate immediately, replacing the old one
   self.skipWaiting();
 });
 
@@ -21,11 +22,20 @@ self.addEventListener('activate', event => {
       )
     )
   );
+  // Take control of all open tabs immediately
   self.clients.claim();
 });
 
+// Network-first strategy: always try fresh content, fall back to cache
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        // Cache the fresh response for offline use
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

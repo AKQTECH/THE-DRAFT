@@ -4,7 +4,7 @@
   "description": "Edit. Protect. Export.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#e0adbe",
+  "background_color": "#ffffff",
   "theme_color": "#E668A7",
   "orientation": "portrait",
   "icons": [
