@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#E668A7">
+<title>the draft</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink-header: #E668A7;
+  --pink-text: #fcd7f1;
+  --body-bg: #e0adbe;
+  --body-text: #fcf6f2;
+  --warm-black: #1C1410;
+  --mauve-rose: #965b6d;
+  --warm-white: #fff2f1;
+  --deep-magenta: #8B0040;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--body-bg);
+  color: var(--warm-black);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* ========== APP SHELL ========== */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: 100dvh;
+}
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+.screen.active { display: flex; }
+
+/* ========== HEADER ========== */
+.app-header {
+  background: var(--pink-header);
+  padding: calc(var(--safe-top) + 12px) 16px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.app-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.app-logo-text {
+  font-family: 'DM Sans', serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--pink-text);
+  letter-spacing: -0.5px;
+}
+.app-logo-tm-svg {
+  vertical-align: super;
+  margin-left: 1px;
+  margin-bottom: 4px;
+}
+.header-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--pink-text);
+}
+.header-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* ========== BOTTOM NAV ========== */
+.bottom-nav {
+  display: flex;
+  background: var(--pink-header);
+  padding: 6px 0 calc(var(--safe-bottom) + 6px);
+  flex-shrink: 0;
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.nav-btn.active { opacity: 1; }
+.nav-btn svg { width: 22px; height: 22px; }
+.nav-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--pink-text);
+}
+
+/* ========== HOME SCREEN ========== */
+.home-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 16px;
+}
+.home-brand {
+  margin-bottom: 24px;
+}
+.home-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--body-text);
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+.home-title {
+  font-family: 'DM Sans', serif;
+  font-weight: 800;
+  font-size: 36px;
+  color: var(--body-text);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.home-title-tm-svg {
+  vertical-align: super;
+  margin-left: 2px;
+  margin-bottom: 8px;
+}
+.home-tagline {
+  font-size: 13px;
+  color: var(--body-text);
+  opacity: 0.7;
+}
+
+.script-list { margin-bottom: 20px; }
+.script-card {
+  background: var(--warm-white);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform 0.15s;
+  box-shadow: 0 2px 8px rgba(28,20,16,0.06);
+}
+.script-card:active { transform: scale(0.98); }
+.script-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--pink-header);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.script-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--warm-black);
+}
+.script-meta {
+  font-size: 12px;
+  color: var(--mauve-rose);
+  margin-top: 2px;
+}
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--body-text);
+  opacity: 0.6;
+}
+.empty-state p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.import-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--pink-header);
+  color: var(--pink-text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.15s;
+}
+.import-btn:active { transform: scale(0.97); }
+#fdx-file-input { display: none; }
+
+/* ========== SCENE NAVIGATOR ========== */
+.scene-tabs {
+  display: flex;
+  background: var(--pink-header);
+  flex-shrink: 0;
+}
+.scene-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--pink-text);
+  opacity: 0.5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s;
+}
+.scene-tab.active {
+  opacity: 1;
+}
+.scene-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+  height: 3px;
+  background: var(--pink-text);
+  border-radius: 2px;
+}
+.scene-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 12px;
+}
+.scene-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 10px;
+  border-bottom: 1px solid rgba(252,246,242,0.15);
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 8px;
+}
+.scene-item:active { background: rgba(252,246,242,0.1); }
+.scene-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--pink-header);
+  color: var(--pink-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.scene-info { flex: 1; min-width: 0; }
+.scene-heading-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--body-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scene-pages {
+  font-size: 11px;
+  color: var(--body-text);
+  opacity: 0.6;
+  margin-top: 2px;
+}
+.scene-arrow {
+  opacity: 0.5;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.scene-search-bar {
+  padding: 12px;
+  flex-shrink: 0;
+}
+.scene-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--warm-white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--warm-black);
+  outline: none;
+}
+.scene-search-input::placeholder { color: var(--mauve-rose); }
+
+.no-script-msg {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--body-text);
+  opacity: 0.6;
+}
+.no-script-msg p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+
+/* ========== EDITOR ========== */
+.editor-back-bar {
+  background: var(--pink-header);
+  padding: 8px 16px;
+  flex-shrink: 0;
+}
+.editor-back-btn {
+  background: none;
+  border: none;
+  color: var(--pink-text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.editor-scene-header {
+  padding: 14px 16px 10px;
+  background: var(--warm-white);
+  border-bottom: 3px solid var(--pink-header);
+  flex-shrink: 0;
+}
+.editor-scene-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--warm-black);
+  letter-spacing: 0.5px;
+}
+.editor-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: white;
+  padding: 16px;
+}
+.fdx-scene-heading {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--warm-black);
+  margin-bottom: 12px;
+}
+.fdx-action {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--warm-black);
+  margin-bottom: 12px;
+}
+.fdx-character {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--warm-black);
+  margin: 12px 0 2px;
+}
+.fdx-dialogue {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--warm-black);
+  text-align: center;
+  max-width: 75%;
+  margin: 0 auto 12px;
+}
+.fdx-parenthetical {
+  font-size: 12px;
+  color: var(--warm-black);
+  text-align: center;
+  margin: 0 auto 2px;
+}
+.fdx-transition {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  color: var(--warm-black);
+  margin: 12px 0;
+}
+.fdx-general {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--warm-black);
+  margin-bottom: 10px;
+}
+
+.format-bar {
+  display: flex;
+  padding: 8px 10px;
+  gap: 4px;
+  background: var(--warm-white);
+  border-top: 1px solid rgba(28,20,16,0.06);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.fmt-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--mauve-rose);
+  transition: all 0.15s;
+}
+.fmt-btn.active {
+  background: var(--pink-header);
+  color: var(--pink-text);
+}
+
+.no-scene-msg {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--mauve-rose);
+}
+.no-scene-msg p { font-size: 14px; line-height: 1.6; }
+
+/* ========== EXPORT ========== */
+.export-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+}
+.export-option {
+  background: var(--warm-white);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(28,20,16,0.06);
+}
+.export-option.selected { border-color: var(--pink-header); }
+.export-option:active { transform: scale(0.98); }
+.export-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.export-title { font-size: 14px; font-weight: 700; color: var(--warm-black); }
+.export-desc { font-size: 11px; color: var(--mauve-rose); margin-top: 2px; }
+.export-go-btn {
+  display: block;
+  width: 100%;
+  background: var(--pink-header);
+  color: var(--pink-text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: transform 0.15s;
+}
+.export-go-btn:active { transform: scale(0.97); }
+.export-go-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ========== SETTINGS ========== */
+.settings-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
+}
+.settings-group {
+  background: var(--warm-white);
+  border-radius: 14px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(28,20,16,0.06);
+}
+.settings-group-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--body-text);
+  opacity: 0.7;
+  padding: 16px 16px 6px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(28,20,16,0.04);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--warm-black);
+}
+.settings-value {
+  font-size: 13px;
+  color: var(--mauve-rose);
+  font-weight: 500;
+}
+.settings-btn {
+  background: var(--pink-header);
+  color: var(--pink-text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.settings-about {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--body-text);
+}
+.settings-version {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--body-text);
+  margin-bottom: 4px;
+}
+.settings-built {
+  font-size: 12px;
+  color: var(--body-text);
+  opacity: 0.6;
+}
+
+/* Toggle switch */
+.toggle {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: #ccc;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle.on { background: var(--pink-header); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.toggle.on::after { transform: translateX(20px); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--warm-black);
+  color: var(--warm-white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 100;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ===== HEADER ===== -->
+  <div class="app-header">
+    <div class="app-logo">
+      <span class="app-logo-text">the draft</span>
+      <svg class="app-logo-tm-svg" width="12" height="8" viewBox="0 0 12 8"><text x="0" y="7" font-family="'DM Sans', sans-serif" font-weight="700" font-size="7" fill="#fcd7f1" opacity="0.7">TM</text></svg>
+    </div>
+    <span class="header-title" id="headerTitle">Home</span>
+  </div>
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div class="screen active" id="screen-home">
+    <div class="home-content">
+      <div class="home-brand">
+        <div class="home-label">Your Scripts</div>
+        <div class="home-title">the draft<svg class="home-title-tm-svg" width="18" height="11" viewBox="0 0 18 11"><text x="0" y="9" font-family="'DM Sans', sans-serif" font-weight="700" font-size="9" fill="#fcf6f2" opacity="0.5">TM</text></svg></div>
+        <div class="home-tagline">Edit. Protect. Export.</div>
+      </div>
+      <div class="script-list" id="scriptList"></div>
+      <button class="import-btn" onclick="document.getElementById('fdx-file-input').click()">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M10 14V3M6 7l4-4 4 4M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2"/></svg>
+        Import .FDX File
+      </button>
+      <input type="file" id="fdx-file-input" accept=".fdx" onchange="handleFDXImport(event)">
+    </div>
+  </div>
+
+  <!-- ===== SCENE NAVIGATOR ===== -->
+  <div class="screen" id="screen-scenes">
+    <div class="scene-tabs">
+      <button class="scene-tab active" onclick="switchSceneTab('scenes', this)">Scenes</button>
+      <button class="scene-tab" onclick="switchSceneTab('pages', this)">Pages</button>
+      <button class="scene-tab" onclick="switchSceneTab('search', this)">Search</button>
+    </div>
+    <div id="sceneTabContent">
+      <div id="scenesListContainer" class="scene-list"></div>
+    </div>
+    <div id="searchPanel" style="display:none; flex-direction:column;">
+      <div class="scene-search-bar">
+        <input class="scene-search-input" type="text" placeholder="Search scenes..." oninput="searchScenes(this.value)">
+      </div>
+      <div class="scene-list" id="searchResults"></div>
+    </div>
+  </div>
+
+  <!-- ===== EDITOR ===== -->
+  <div class="screen" id="screen-editor">
+    <div class="editor-back-bar">
+      <button class="editor-back-btn" onclick="navigateTo('scenes')">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M12 4l-6 6 6 6"/></svg>
+        Back
+      </button>
+    </div>
+    <div class="editor-scene-header">
+      <div class="editor-scene-title" id="editorSceneTitle">No scene selected</div>
+    </div>
+    <div class="editor-content" id="editorContent">
+      <div class="no-scene-msg">
+        <p>Select a scene from the Scene Navigator to begin editing.</p>
+      </div>
+    </div>
+    <div class="format-bar">
+      <button class="fmt-btn active">Scene</button>
+      <button class="fmt-btn">Action</button>
+      <button class="fmt-btn">Char</button>
+      <button class="fmt-btn">Dialog</button>
+      <button class="fmt-btn">Paren</button>
+      <button class="fmt-btn">Trans</button>
+    </div>
+  </div>
+
+  <!-- ===== EXPORT ===== -->
+  <div class="screen" id="screen-export">
+    <div class="export-content" id="exportContent">
+      <div id="exportNoScript" class="no-script-msg" style="display:none;">
+        <p>Import a script first to enable export options.</p>
+      </div>
+      <div id="exportOptions">
+        <div class="export-option selected" onclick="selectExport(this, 'full')">
+          <div class="export-icon" style="background: var(--pink-header);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="7" y1="6" x2="13" y2="6"/><line x1="7" y1="9" x2="13" y2="9"/><line x1="7" y1="12" x2="10" y2="12"/></svg>
+          </div>
+          <div>
+            <div class="export-title">Full Script PDF</div>
+            <div class="export-desc" id="exportFullDesc">All scenes</div>
+          </div>
+        </div>
+        <div class="export-option" onclick="selectExport(this, 'scene')">
+          <div class="export-icon" style="background: var(--body-bg);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcf6f2" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><circle cx="10" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <div class="export-title">Single Scene</div>
+            <div class="export-desc">Export current scene as PDF</div>
+          </div>
+        </div>
+        <div class="export-option" onclick="selectExport(this, 'range')">
+          <div class="export-icon" style="background: var(--body-bg);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcf6f2" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="4" y1="7" x2="16" y2="7"/><line x1="4" y1="13" x2="16" y2="13"/></svg>
+          </div>
+          <div>
+            <div class="export-title">Page Range</div>
+            <div class="export-desc">Select start and end pages</div>
+          </div>
+        </div>
+        <div class="export-option" onclick="selectExport(this, 'fdx')">
+          <div class="export-icon" style="background: var(--pink-header);">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><path d="M4 4l4-2 4 2 4-2v14l-4 2-4-2-4 2z"/></svg>
+          </div>
+          <div>
+            <div class="export-title">Save as .FDX</div>
+            <div class="export-desc">Re-export Final Draft file</div>
+          </div>
+        </div>
+        <button class="export-go-btn" id="exportGoBtn" onclick="handleExport()">GO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS ===== -->
+  <div class="screen" id="screen-settings">
+    <div class="settings-content">
+      <div class="settings-group-title">Storage</div>
+      <div class="settings-group">
+        <div class="settings-row">
+          <span class="settings-label">Dropbox Sync</span>
+          <div class="toggle" id="dropboxToggle" onclick="toggleDropbox()"></div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Dropbox Status</span>
+          <span class="settings-value" id="dropboxStatus">Not connected</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Sync Folder</span>
+          <span class="settings-value">/Apps/the draft</span>
+        </div>
+      </div>
+
+      <div class="settings-group-title">Scripts</div>
+      <div class="settings-group">
+        <div class="settings-row">
+          <span class="settings-label">Scripts on device</span>
+          <span class="settings-value" id="scriptCount">0</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Clear all scripts</span>
+          <button class="settings-btn" onclick="confirmClearScripts()">Clear</button>
+        </div>
+      </div>
+
+      <div class="settings-group-title">Display</div>
+      <div class="settings-group">
+        <div class="settings-row">
+          <span class="settings-label">Editor Font Size</span>
+          <span class="settings-value" id="fontSizeValue">13px</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Scene Numbers</span>
+          <div class="toggle on" id="sceneNumToggle" onclick="toggleSceneNumbers()"></div>
+        </div>
+      </div>
+
+      <div class="settings-about">
+        <div class="settings-version">the draft v1.1</div>
+        <div class="settings-built">Built for April Korto Quioh</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="navigateTo('home')" id="nav-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" onclick="navigateTo('scenes')" id="nav-scenes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+      <span class="nav-label">Scenes</span>
+    </button>
+    <button class="nav-btn" onclick="navigateTo('editor')" id="nav-editor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M15.5 3.5l5 5L7 22H2v-5L15.5 3.5z"/></svg>
+      <span class="nav-label">Editor</span>
+    </button>
+    <button class="nav-btn" onclick="navigateTo('export')" id="nav-export">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>
+      <span class="nav-label">Export</span>
+    </button>
+    <button class="nav-btn" onclick="navigateTo('settings')" id="nav-settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8l2.8-2.8M17 7l2.8-2.8"/></svg>
+      <span class="nav-label">Settings</span>
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== APP STATE ==========
+let appState = {
+  scripts: [],
+  activeScriptId: null,
+  activeSceneIndex: null,
+  selectedExport: 'full',
+  settings: {
+    dropboxEnabled: false,
+    showSceneNumbers: true,
+    editorFontSize: 13
+  }
+};
+
+// ========== INIT ==========
+function init() {
+  loadState();
+  renderScriptList();
+  updateSceneNavigator();
+  updateExportScreen();
+  updateSettingsScreen();
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('the_draft_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      appState = { ...appState, ...parsed };
+    }
+  } catch(e) { console.error('Failed to load state:', e); }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('the_draft_state', JSON.stringify(appState));
+  } catch(e) { console.error('Failed to save state:', e); }
+}
+
+// ========== NAVIGATION ==========
+function navigateTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.getElementById('nav-' + screen).classList.add('active');
+  const titles = { home: 'Home', scenes: 'Scene Navigator', editor: 'Editor', export: 'Export', settings: 'Settings' };
+  document.getElementById('headerTitle').textContent = titles[screen] || '';
+}
+
+// ========== FDX IMPORT ==========
+function handleFDXImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.fdx')) {
+    showToast('Please select a .fdx file');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const xmlText = e.target.result;
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(xmlText, 'text/xml');
+      const script = parseFDX(xml, file.name, xmlText);
+      if (script.scenes.length === 0) {
+        showToast('No scenes found in this FDX file');
+        return;
+      }
+      // Check for duplicate
+      const existingIdx = appState.scripts.findIndex(s => s.fileName === file.name);
+      if (existingIdx >= 0) {
+        appState.scripts[existingIdx] = script;
+      } else {
+        appState.scripts.push(script);
+      }
+      appState.activeScriptId = script.id;
+      saveState();
+      renderScriptList();
+      updateSceneNavigator();
+      updateExportScreen();
+      updateSettingsScreen();
+      showToast(script.title + ' imported — ' + script.scenes.length + ' scenes');
+      navigateTo('scenes');
+    } catch(err) {
+      console.error('FDX parse error:', err);
+      showToast('Error parsing FDX file');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function parseFDX(xml, fileName, rawXml) {
+  const paragraphs = xml.querySelectorAll('Paragraph');
+  const scenes = [];
+  let currentScene = null;
+  let pageCount = 0;
+
+  paragraphs.forEach(p => {
+    const type = p.getAttribute('Type') || '';
+    const textEls = p.querySelectorAll('Text');
+    let text = '';
+    textEls.forEach(t => { text += t.textContent || ''; });
+
+    if (type === 'Scene Heading' && text.trim()) {
+      if (currentScene) scenes.push(currentScene);
+      currentScene = {
+        heading: text.trim(),
+        elements: [],
+        startPage: pageCount + 1
+      };
+    }
+    if (currentScene && text.trim()) {
+      currentScene.elements.push({ type: type, text: text.trim() });
+    }
+
+    // Rough page estimation
+    if (type === 'Scene Heading') pageCount++;
+  });
+  if (currentScene) scenes.push(currentScene);
+
+  // Estimate pages per scene
+  const totalEstPages = Math.max(pageCount, Math.ceil(paragraphs.length / 55));
+  const pagesPerScene = Math.max(1, Math.round(totalEstPages / Math.max(1, scenes.length)));
+  scenes.forEach((s, i) => {
+    s.startPage = (i * pagesPerScene) + 1;
+    s.endPage = Math.min(((i + 1) * pagesPerScene), totalEstPages);
+  });
+
+  const titlePage = xml.querySelector('TitlePage');
+  let title = fileName.replace('.fdx', '').replace(/_/g, ' ');
+  if (titlePage) {
+    const contentEl = titlePage.querySelector('Content Text');
+    if (contentEl && contentEl.textContent.trim()) {
+      title = contentEl.textContent.trim();
+    }
+  }
+
+  return {
+    id: 'script_' + Date.now(),
+    title: title.toUpperCase(),
+    fileName: fileName,
+    scenes: scenes,
+    totalPages: totalEstPages,
+    importDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    rawXml: rawXml
+  };
+}
+
+// ========== RENDER ==========
+function renderScriptList() {
+  const container = document.getElementById('scriptList');
+  if (appState.scripts.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>No scripts yet. Import a .fdx file to get started.</p></div>';
+    return;
+  }
+  container.innerHTML = appState.scripts.map(s => `
+    <div class="script-card" onclick="selectScript('${s.id}')">
+      <div class="script-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8">
+          <rect x="4" y="2" width="12" height="16" rx="1.5"/>
+          <line x1="7" y1="6" x2="13" y2="6"/>
+          <line x1="7" y1="9" x2="13" y2="9"/>
+          <line x1="7" y1="12" x2="10" y2="12"/>
+        </svg>
+      </div>
+      <div>
+        <div class="script-name">${s.title}</div>
+        <div class="script-meta">${s.scenes.length} scenes &middot; ${s.totalPages} pages &middot; ${s.importDate}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectScript(id) {
+  appState.activeScriptId = id;
+  saveState();
+  updateSceneNavigator();
+  updateExportScreen();
+  navigateTo('scenes');
+}
+
+function updateSceneNavigator() {
+  const container = document.getElementById('scenesListContainer');
+  const script = getActiveScript();
+  if (!script) {
+    container.innerHTML = '<div class="no-script-msg"><p>Import a script from the Home screen to browse scenes.</p></div>';
+    return;
+  }
+  container.innerHTML = script.scenes.map((s, i) => `
+    <div class="scene-item" onclick="openScene(${i})">
+      <div class="scene-num">${i + 1}</div>
+      <div class="scene-info">
+        <div class="scene-heading-text">${s.heading}</div>
+        <div class="scene-pages">pp. ${s.startPage}-${s.endPage}</div>
+      </div>
+      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#fcd7f1" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
+    </div>
+  `).join('');
+}
+
+function openScene(index) {
+  appState.activeSceneIndex = index;
+  saveState();
+  renderEditor();
+  navigateTo('editor');
+}
+
+function renderEditor() {
+  const script = getActiveScript();
+  const titleEl = document.getElementById('editorSceneTitle');
+  const contentEl = document.getElementById('editorContent');
+
+  if (!script || appState.activeSceneIndex === null || appState.activeSceneIndex >= script.scenes.length) {
+    titleEl.textContent = 'No scene selected';
+    contentEl.innerHTML = '<div class="no-scene-msg"><p>Select a scene from the Scene Navigator.</p></div>';
+    return;
+  }
+
+  const scene = script.scenes[appState.activeSceneIndex];
+  titleEl.textContent = scene.heading;
+
+  let html = '';
+  scene.elements.forEach(el => {
+    switch(el.type) {
+      case 'Scene Heading':
+        html += `<div class="fdx-scene-heading">${escHtml(el.text)}</div>`;
+        break;
+      case 'Action':
+        html += `<div class="fdx-action">${escHtml(el.text)}</div>`;
+        break;
+      case 'Character':
+        html += `<div class="fdx-character">${escHtml(el.text)}</div>`;
+        break;
+      case 'Dialogue':
+        html += `<div class="fdx-dialogue">${escHtml(el.text)}</div>`;
+        break;
+      case 'Parenthetical':
+        html += `<div class="fdx-parenthetical">${escHtml(el.text)}</div>`;
+        break;
+      case 'Transition':
+        html += `<div class="fdx-transition">${escHtml(el.text)}</div>`;
+        break;
+      default:
+        html += `<div class="fdx-general">${escHtml(el.text)}</div>`;
+    }
+  });
+  contentEl.innerHTML = html;
+}
+
+function switchSceneTab(tab, btn) {
+  document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const listContainer = document.getElementById('scenesListContainer');
+  const searchPanel = document.getElementById('searchPanel');
+  if (tab === 'search') {
+    listContainer.style.display = 'none';
+    searchPanel.style.display = 'flex';
+    searchPanel.style.flexDirection = 'column';
+    searchPanel.style.flex = '1';
+  } else {
+    listContainer.style.display = 'block';
+    searchPanel.style.display = 'none';
+  }
+}
+
+function searchScenes(query) {
+  const script = getActiveScript();
+  const container = document.getElementById('searchResults');
+  if (!script || !query.trim()) {
+    container.innerHTML = '';
+    return;
+  }
+  const q = query.toLowerCase();
+  const results = script.scenes.map((s, i) => ({ scene: s, index: i }))
+    .filter(item => item.scene.heading.toLowerCase().includes(q) ||
+      item.scene.elements.some(el => el.text.toLowerCase().includes(q)));
+
+  container.innerHTML = results.map(item => `
+    <div class="scene-item" onclick="openScene(${item.index})">
+      <div class="scene-num">${item.index + 1}</div>
+      <div class="scene-info">
+        <div class="scene-heading-text">${item.scene.heading}</div>
+        <div class="scene-pages">pp. ${item.scene.startPage}-${item.scene.endPage}</div>
+      </div>
+      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#fcd7f1" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
+    </div>
+  `).join('') || '<div class="no-script-msg"><p>No matching scenes.</p></div>';
+}
+
+// ========== EXPORT ==========
+function updateExportScreen() {
+  const script = getActiveScript();
+  const noScript = document.getElementById('exportNoScript');
+  const options = document.getElementById('exportOptions');
+  if (!script) {
+    noScript.style.display = 'block';
+    options.style.display = 'none';
+    return;
+  }
+  noScript.style.display = 'none';
+  options.style.display = 'block';
+  document.getElementById('exportFullDesc').textContent =
+    `All ${script.scenes.length} scenes, ~${script.totalPages} pages`;
+}
+
+function selectExport(el, type) {
+  document.querySelectorAll('.export-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  appState.selectedExport = type;
+}
+
+function handleExport() {
+  const script = getActiveScript();
+  if (!script) { showToast('No script loaded'); return; }
+
+  if (appState.selectedExport === 'fdx') {
+    // Re-export original FDX
+    if (script.rawXml) {
+      const blob = new Blob([script.rawXml], { type: 'text/xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = script.fileName || 'script.fdx';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('FDX file downloaded');
+    } else {
+      showToast('Original FDX data not available');
+    }
+  } else {
+    showToast('PDF export coming in next update');
+  }
+}
+
+// ========== SETTINGS ==========
+function updateSettingsScreen() {
+  document.getElementById('scriptCount').textContent = appState.scripts.length;
+  const dropboxToggle = document.getElementById('dropboxToggle');
+  if (appState.settings.dropboxEnabled) {
+    dropboxToggle.classList.add('on');
+    document.getElementById('dropboxStatus').textContent = 'Ready to connect';
+  } else {
+    dropboxToggle.classList.remove('on');
+    document.getElementById('dropboxStatus').textContent = 'Not connected';
+  }
+  const sceneNumToggle = document.getElementById('sceneNumToggle');
+  if (appState.settings.showSceneNumbers) {
+    sceneNumToggle.classList.add('on');
+  } else {
+    sceneNumToggle.classList.remove('on');
+  }
+}
+
+function toggleDropbox() {
+  appState.settings.dropboxEnabled = !appState.settings.dropboxEnabled;
+  saveState();
+  updateSettingsScreen();
+  showToast(appState.settings.dropboxEnabled ? 'Dropbox sync enabled' : 'Dropbox sync disabled');
+}
+
+function toggleSceneNumbers() {
+  appState.settings.showSceneNumbers = !appState.settings.showSceneNumbers;
+  saveState();
+  updateSettingsScreen();
+}
+
+function confirmClearScripts() {
+  if (appState.scripts.length === 0) {
+    showToast('No scripts to clear');
+    return;
+  }
+  if (confirm('Clear all imported scripts? This cannot be undone.')) {
+    appState.scripts = [];
+    appState.activeScriptId = null;
+    appState.activeSceneIndex = null;
+    saveState();
+    renderScriptList();
+    updateSceneNavigator();
+    updateExportScreen();
+    updateSettingsScreen();
+    showToast('All scripts cleared');
+  }
+}
+
+// ========== HELPERS ==========
+function getActiveScript() {
+  return appState.scripts.find(s => s.id === appState.activeScriptId) || null;
+}
+
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ========== SERVICE WORKER ==========
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
+
+// ========== START ==========
+init();
+</script>
+</body>
+</html>
