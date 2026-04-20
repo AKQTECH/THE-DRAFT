@@ -10,13 +10,13 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Courier+Prime&display=swap" rel="stylesheet">
 <style>
 :root {
   --pink-header: #E668A7;
   --pink-text: #fcd7f1;
-  --accent-bg: #e0adbe;
-  --accent-text: #fcf6f2;
+  --accent-bg: #f6d0f7;
+  --accent-text: #e667a6;
   --warm-black: #1C1410;
   --mauve-rose: #965b6d;
   --safe-top: env(safe-area-inset-top, 0px);
@@ -82,12 +82,6 @@ body {
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--pink-text);
-}
-.header-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
 }
 
 /* ========== BOTTOM NAV ========== */
@@ -228,9 +222,7 @@ body {
   position: relative;
   transition: opacity 0.2s;
 }
-.scene-tab.active {
-  opacity: 1;
-}
+.scene-tab.active { opacity: 1; }
 .scene-tab.active::after {
   content: '';
   position: absolute;
@@ -252,13 +244,13 @@ body {
   display: flex;
   align-items: center;
   padding: 14px 10px;
-  border-bottom: 1px solid rgba(224,173,190,0.25);
+  border-bottom: 1px solid rgba(246,208,247,0.5);
   gap: 12px;
   cursor: pointer;
   transition: background 0.15s;
   border-radius: 8px;
 }
-.scene-item:active { background: rgba(224,173,190,0.1); }
+.scene-item:active { background: rgba(246,208,247,0.2); }
 .scene-num {
   width: 34px;
   height: 34px;
@@ -467,9 +459,33 @@ body {
   transition: transform 0.15s;
 }
 .export-go-btn:active { transform: scale(0.97); }
-.export-go-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.export-go-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.range-inputs {
+  display: none;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+.range-inputs.visible { display: flex; }
+.range-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 2px solid var(--accent-bg);
+  background: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--warm-black);
+  text-align: center;
+  outline: none;
+}
+.range-input:focus { border-color: var(--pink-header); }
+.range-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mauve-rose);
 }
 
 /* ========== SETTINGS ========== */
@@ -500,7 +516,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(252,246,242,0.15);
+  border-bottom: 1px solid rgba(230,103,166,0.1);
 }
 .settings-row:last-child { border-bottom: none; }
 .settings-label {
@@ -674,7 +690,7 @@ body {
           </div>
           <div>
             <div class="export-title">Single Scene</div>
-            <div class="export-desc">Export current scene as PDF</div>
+            <div class="export-desc" id="exportSceneDesc">Export current scene as PDF</div>
           </div>
         </div>
         <div class="export-option" onclick="selectExport(this, 'range')">
@@ -682,8 +698,18 @@ body {
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="4" y1="7" x2="16" y2="7"/><line x1="4" y1="13" x2="16" y2="13"/></svg>
           </div>
           <div>
-            <div class="export-title">Page Range</div>
-            <div class="export-desc">Select start and end pages</div>
+            <div class="export-title">Scene Range</div>
+            <div class="export-desc">Select start and end scenes</div>
+          </div>
+        </div>
+        <div class="range-inputs" id="rangeInputs">
+          <div>
+            <div class="range-label">From</div>
+            <input class="range-input" type="number" id="rangeStart" min="1" value="1">
+          </div>
+          <div>
+            <div class="range-label">To</div>
+            <input class="range-input" type="number" id="rangeEnd" min="1" value="1">
           </div>
         </div>
         <div class="export-option" onclick="selectExport(this, 'fdx')">
@@ -695,7 +721,7 @@ body {
             <div class="export-desc">Re-export Final Draft file</div>
           </div>
         </div>
-        <button class="export-go-btn" id="exportGoBtn" onclick="handleExport()">GO</button>
+        <button class="export-go-btn" id="exportGoBtn" onclick="handleExport()">EXPORT</button>
       </div>
     </div>
   </div>
@@ -744,7 +770,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.2</div>
+        <div class="settings-version">the draft v1.3</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -779,7 +805,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.2';
+const APP_VERSION = '1.3';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -791,6 +817,14 @@ let appState = {
     editorFontSize: 13
   }
 };
+
+// Title page element types to filter out
+const TITLE_PAGE_TYPES = new Set([
+  '', 'Script Title', 'Written by', 'Name of First Writer',
+  'Based on', 'Address', 'Phone Number', 'Revision',
+  'Draft Date', 'Copyright', 'Contact', 'Author',
+  'Source', 'Notes'
+]);
 
 // ========== INIT ==========
 function init() {
@@ -829,16 +863,11 @@ function navigateTo(screen) {
 
 // ========== SCENE HEADING FORMATTER ==========
 function formatSceneHeading(raw) {
-  // Force uppercase
   let h = raw.toUpperCase().trim();
-  // Normalize dashes: replace en-dash, em-dash, multiple dashes with single spaced dash
   h = h.replace(/\s*[\u2013\u2014]+\s*/g, ' - ');
   h = h.replace(/\s*-{2,}\s*/g, ' - ');
-  // Ensure single space around remaining dashes
   h = h.replace(/\s*-\s*/g, ' - ');
-  // Fix common prefix issues: ensure "INT." or "EXT." have the period
   h = h.replace(/^(INT|EXT|I\/E)\s/i, '$1. ');
-  // Ensure period after INT/EXT if missing
   h = h.replace(/^(INT|EXT|I\/E)([^.])/i, '$1.$2');
   return h;
 }
@@ -862,7 +891,6 @@ function handleFDXImport(event) {
         showToast('No scenes found in this FDX file');
         return;
       }
-      // Check for duplicate
       const existingIdx = appState.scripts.findIndex(s => s.fileName === file.name);
       if (existingIdx >= 0) {
         appState.scripts[existingIdx] = script;
@@ -887,7 +915,9 @@ function handleFDXImport(event) {
 }
 
 function parseFDX(xml, fileName, rawXml) {
-  const paragraphs = xml.querySelectorAll('Paragraph');
+  // Only get paragraphs inside <Content>, not <TitlePage>
+  const contentEl = xml.querySelector('Content');
+  const paragraphs = contentEl ? contentEl.querySelectorAll('Paragraph') : xml.querySelectorAll('Paragraph');
   const scenes = [];
   let currentScene = null;
   let pageCount = 0;
@@ -897,21 +927,24 @@ function parseFDX(xml, fileName, rawXml) {
     const textEls = p.querySelectorAll('Text');
     let text = '';
     textEls.forEach(t => { text += t.textContent || ''; });
+    const trimmed = text.trim();
 
-    if (type === 'Scene Heading' && text.trim()) {
+    // Skip title page elements and empty/dot-only lines
+    if (TITLE_PAGE_TYPES.has(type)) return;
+    if (!trimmed || /^\.+$/.test(trimmed)) return;
+
+    if (type === 'Scene Heading' && trimmed) {
       if (currentScene) scenes.push(currentScene);
       currentScene = {
-        heading: formatSceneHeading(text.trim()),
+        heading: formatSceneHeading(trimmed),
         elements: [],
         startPage: pageCount + 1
       };
+      pageCount++;
     }
-    if (currentScene && text.trim()) {
-      currentScene.elements.push({ type: type, text: text.trim() });
+    if (currentScene && trimmed) {
+      currentScene.elements.push({ type: type, text: trimmed });
     }
-
-    // Rough page estimation
-    if (type === 'Scene Heading') pageCount++;
   });
   if (currentScene) scenes.push(currentScene);
 
@@ -926,9 +959,16 @@ function parseFDX(xml, fileName, rawXml) {
   const titlePage = xml.querySelector('TitlePage');
   let title = fileName.replace('.fdx', '').replace(/_/g, ' ');
   if (titlePage) {
-    const contentEl = titlePage.querySelector('Content Text');
-    if (contentEl && contentEl.textContent.trim()) {
-      title = contentEl.textContent.trim();
+    const tpParagraphs = titlePage.querySelectorAll('Paragraph');
+    for (const tp of tpParagraphs) {
+      const tpType = tp.getAttribute('Type') || '';
+      if (tpType === 'Script Title') {
+        const textEl = tp.querySelector('Text');
+        if (textEl && textEl.textContent.trim()) {
+          title = textEl.textContent.trim();
+          break;
+        }
+      }
     }
   }
 
@@ -962,7 +1002,7 @@ function renderScriptList() {
       </div>
       <div>
         <div class="script-name">${s.title}</div>
-        <div class="script-meta">${s.scenes.length} scenes &middot; ${s.totalPages} pages &middot; ${s.importDate}</div>
+        <div class="script-meta">${s.scenes.length} scenes &middot; ~${s.totalPages} pages &middot; ${s.importDate}</div>
       </div>
     </div>
   `).join('');
@@ -990,7 +1030,7 @@ function updateSceneNavigator() {
         <div class="scene-heading-text">${escHtml(s.heading)}</div>
         <div class="scene-pages">pp. ${s.startPage}-${s.endPage}</div>
       </div>
-      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#e0adbe" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
+      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#f6d0f7" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
     </div>
   `).join('');
 }
@@ -1018,27 +1058,31 @@ function renderEditor() {
 
   let html = '';
   scene.elements.forEach(el => {
+    const txt = el.text.trim();
+    if (!txt || /^\.+$/.test(txt)) return;
     switch(el.type) {
       case 'Scene Heading':
-        html += `<div class="fdx-scene-heading">${escHtml(formatSceneHeading(el.text))}</div>`;
+        html += `<div class="fdx-scene-heading">${escHtml(formatSceneHeading(txt))}</div>`;
         break;
       case 'Action':
-        html += `<div class="fdx-action">${escHtml(el.text)}</div>`;
+        html += `<div class="fdx-action">${escHtml(txt)}</div>`;
         break;
       case 'Character':
-        html += `<div class="fdx-character">${escHtml(el.text)}</div>`;
+        html += `<div class="fdx-character">${escHtml(txt)}</div>`;
         break;
       case 'Dialogue':
-        html += `<div class="fdx-dialogue">${escHtml(el.text)}</div>`;
+        html += `<div class="fdx-dialogue">${escHtml(txt)}</div>`;
         break;
       case 'Parenthetical':
-        html += `<div class="fdx-parenthetical">${escHtml(el.text)}</div>`;
+        html += `<div class="fdx-parenthetical">${escHtml(txt)}</div>`;
         break;
       case 'Transition':
-        html += `<div class="fdx-transition">${escHtml(el.text)}</div>`;
+        html += `<div class="fdx-transition">${escHtml(txt)}</div>`;
         break;
       default:
-        html += `<div class="fdx-general">${escHtml(el.text)}</div>`;
+        if (!TITLE_PAGE_TYPES.has(el.type)) {
+          html += `<div class="fdx-general">${escHtml(txt)}</div>`;
+        }
     }
   });
   contentEl.innerHTML = html;
@@ -1079,7 +1123,7 @@ function searchScenes(query) {
         <div class="scene-heading-text">${escHtml(item.scene.heading)}</div>
         <div class="scene-pages">pp. ${item.scene.startPage}-${item.scene.endPage}</div>
       </div>
-      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#e0adbe" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
+      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#f6d0f7" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
     </div>
   `).join('') || '<div class="no-script-msg"><p>No matching scenes.</p></div>';
 }
@@ -1098,12 +1142,21 @@ function updateExportScreen() {
   options.style.display = 'block';
   document.getElementById('exportFullDesc').textContent =
     `All ${script.scenes.length} scenes, ~${script.totalPages} pages`;
+  if (appState.activeSceneIndex !== null && appState.activeSceneIndex < script.scenes.length) {
+    document.getElementById('exportSceneDesc').textContent =
+      'Scene ' + (appState.activeSceneIndex + 1) + ': ' + script.scenes[appState.activeSceneIndex].heading.substring(0, 30);
+  }
+  document.getElementById('rangeEnd').max = script.scenes.length;
+  document.getElementById('rangeEnd').value = script.scenes.length;
+  document.getElementById('rangeStart').max = script.scenes.length;
 }
 
 function selectExport(el, type) {
   document.querySelectorAll('.export-option').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   appState.selectedExport = type;
+  const rangeInputs = document.getElementById('rangeInputs');
+  rangeInputs.classList.toggle('visible', type === 'range');
 }
 
 function handleExport() {
@@ -1111,20 +1164,107 @@ function handleExport() {
   if (!script) { showToast('No script loaded'); return; }
 
   if (appState.selectedExport === 'fdx') {
-    if (script.rawXml) {
-      const blob = new Blob([script.rawXml], { type: 'text/xml' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = script.fileName || 'script.fdx';
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('FDX file downloaded');
-    } else {
-      showToast('Original FDX data not available');
+    exportFDX(script);
+  } else if (appState.selectedExport === 'full') {
+    exportPDF(script, 0, script.scenes.length - 1);
+  } else if (appState.selectedExport === 'scene') {
+    if (appState.activeSceneIndex === null) {
+      showToast('Select a scene first from the Scene Navigator');
+      return;
     }
+    exportPDF(script, appState.activeSceneIndex, appState.activeSceneIndex);
+  } else if (appState.selectedExport === 'range') {
+    const start = parseInt(document.getElementById('rangeStart').value) - 1;
+    const end = parseInt(document.getElementById('rangeEnd').value) - 1;
+    if (isNaN(start) || isNaN(end) || start < 0 || end >= script.scenes.length || start > end) {
+      showToast('Invalid scene range');
+      return;
+    }
+    exportPDF(script, start, end);
+  }
+}
+
+function exportFDX(script) {
+  if (script.rawXml) {
+    const blob = new Blob([script.rawXml], { type: 'text/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = script.fileName || 'script.fdx';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('FDX file downloaded');
   } else {
-    showToast('PDF export coming in next update');
+    showToast('Original FDX data not available');
+  }
+}
+
+function exportPDF(script, startIdx, endIdx) {
+  const scenes = script.scenes.slice(startIdx, endIdx + 1);
+  let bodyHtml = '';
+
+  scenes.forEach((scene, idx) => {
+    if (idx > 0) bodyHtml += '<div class="page-break"></div>';
+    scene.elements.forEach(el => {
+      const txt = el.text.trim();
+      if (!txt || /^\.+$/.test(txt)) return;
+      if (TITLE_PAGE_TYPES.has(el.type)) return;
+      switch(el.type) {
+        case 'Scene Heading':
+          bodyHtml += '<p class="scene-heading">' + escHtml(formatSceneHeading(txt)) + '</p>';
+          break;
+        case 'Action':
+          bodyHtml += '<p class="action">' + escHtml(txt) + '</p>';
+          break;
+        case 'Character':
+          bodyHtml += '<p class="character">' + escHtml(txt) + '</p>';
+          break;
+        case 'Dialogue':
+          bodyHtml += '<p class="dialogue">' + escHtml(txt) + '</p>';
+          break;
+        case 'Parenthetical':
+          bodyHtml += '<p class="parenthetical">' + escHtml(txt) + '</p>';
+          break;
+        case 'Transition':
+          bodyHtml += '<p class="transition">' + escHtml(txt) + '</p>';
+          break;
+        default:
+          bodyHtml += '<p class="action">' + escHtml(txt) + '</p>';
+      }
+    });
+  });
+
+  const label = startIdx === endIdx
+    ? 'Scene ' + (startIdx + 1)
+    : (startIdx === 0 && endIdx === script.scenes.length - 1)
+      ? 'Full Script'
+      : 'Scenes ' + (startIdx + 1) + '-' + (endIdx + 1);
+
+  const printHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>${escHtml(script.title)} - ${label}</title>
+<style>
+@page { size: letter; margin: 1in; }
+body { font-family: 'Courier Prime', 'Courier New', Courier, monospace; font-size: 12pt; line-height: 1.1; color: #000; }
+.scene-heading { font-weight: bold; text-transform: uppercase; margin: 24pt 0 12pt; }
+.action { margin: 0 0 12pt; }
+.character { text-transform: uppercase; text-align: left; margin: 12pt 0 0; padding-left: 2.5in; }
+.dialogue { margin: 0 0 12pt; padding-left: 1.5in; padding-right: 1.5in; }
+.parenthetical { margin: 0 0 0; padding-left: 2in; padding-right: 1.5in; }
+.transition { text-align: right; text-transform: uppercase; margin: 12pt 0; }
+.page-break { page-break-after: always; }
+p { margin: 0 0 0; }
+</style></head><body>${bodyHtml}</body></html>`;
+
+  const printWin = window.open('', '_blank');
+  if (printWin) {
+    printWin.document.write(printHtml);
+    printWin.document.close();
+    setTimeout(() => {
+      printWin.print();
+    }, 400);
+    showToast(label + ' ready to print/save as PDF');
+  } else {
+    showToast('Pop-up blocked. Allow pop-ups to export PDF.');
   }
 }
 
@@ -1199,9 +1339,7 @@ function showToast(msg) {
 // ========== SERVICE WORKER (with auto-update) ==========
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js').then(reg => {
-    // Check for updates every time the app loads
     reg.update();
-    // When a new SW is found and installed, reload to pick up changes
     reg.addEventListener('updatefound', () => {
       const newWorker = reg.installing;
       newWorker.addEventListener('statechange', () => {
