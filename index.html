@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#E668A7">
@@ -398,6 +398,11 @@ body {
   line-height: 1.5;
   color: var(--warm-black);
   margin-bottom: 10px;
+}
+
+/* Editor screen: allow overflow so iOS can focus contentEditable */
+#screen-editor {
+  overflow: visible;
 }
 
 /* ========== EDITING STATES ========== */
@@ -872,12 +877,12 @@ function loadState() {
 
 function saveState() {
   try {
-    // Before stringifying, update rawXml from live DOM and strip non-serializable refs
-    const toSave = JSON.parse(JSON.stringify(appState, (key, val) => {
+    // Strip non-serializable DOM refs (xmlDoc, xmlParagraph) before saving
+    const cleanJson = JSON.stringify(appState, (key, val) => {
       if (key === 'xmlDoc' || key === 'xmlParagraph') return undefined;
       return val;
-    }));
-    localStorage.setItem('the_draft_state', JSON.stringify(toSave));
+    });
+    localStorage.setItem('the_draft_state', cleanJson);
   } catch(e) { console.error('Failed to save state:', e); }
 }
 
@@ -1110,7 +1115,7 @@ function renderEditor() {
   scene.elements.forEach((el, elIndex) => {
     const txt = el.text.trim();
     if (!txt || /^\.+$/.test(txt)) return;
-    const edAttr = `contenteditable="true" data-scene="${sceneIdx}" data-element="${elIndex}" data-type="${el.type}"`;
+    const edAttr = `contenteditable="true" tabindex="0" data-scene="${sceneIdx}" data-element="${elIndex}" data-type="${el.type}"`;
     switch(el.type) {
       case 'Scene Heading':
         html += `<div class="fdx-scene-heading" ${edAttr}>${escHtml(formatSceneHeading(txt))}</div>`;
@@ -1185,6 +1190,22 @@ function attachEditHandlers(container) {
       e.preventDefault();
       const text = (e.clipboardData || window.clipboardData).getData('text/plain');
       document.execCommand('insertText', false, text);
+    });
+
+    // iOS: programmatic focus nudge to bypass fixed-body suppression
+    div.addEventListener('touchend', function(e) {
+      const el = this;
+      setTimeout(() => {
+        el.focus();
+        const sel = window.getSelection();
+        if (sel.rangeCount === 0) {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          range.collapse(false);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }, 50);
     });
   });
 }
