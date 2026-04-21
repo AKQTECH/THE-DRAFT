@@ -167,6 +167,25 @@ body {
   opacity: 0.7;
   margin-top: 2px;
 }
+.script-delete-btn {
+  background: none;
+  border: none;
+  color: var(--mauve-rose);
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s, color 0.15s;
+}
+.script-delete-btn:active {
+  opacity: 1;
+  color: var(--pink-header);
+}
+
 .empty-state {
   text-align: center;
   padding: 40px 20px;
@@ -1054,12 +1073,32 @@ function renderScriptList() {
           <line x1="7" y1="12" x2="10" y2="12"/>
         </svg>
       </div>
-      <div>
+      <div style="flex:1;min-width:0;">
         <div class="script-name">${s.title}</div>
         <div class="script-meta">${s.scenes.length} scenes &middot; ~${s.totalPages} pages &middot; ${s.importDate}</div>
       </div>
+      <button class="script-delete-btn" onclick="event.stopPropagation(); deleteScript('${s.id}')" aria-label="Delete script">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h12M8 6V4h4v2M6 6v10a1 1 0 001 1h6a1 1 0 001-1V6"/><line x1="9" y1="9" x2="9" y2="14"/><line x1="11" y1="9" x2="11" y2="14"/></svg>
+      </button>
     </div>
   `).join('');
+}
+
+function deleteScript(id) {
+  const script = appState.scripts.find(s => s.id === id);
+  if (!script) return;
+  if (!confirm('Delete "' + script.title + '"? This cannot be undone.')) return;
+  appState.scripts = appState.scripts.filter(s => s.id !== id);
+  if (appState.activeScriptId === id) {
+    appState.activeScriptId = appState.scripts.length > 0 ? appState.scripts[0].id : null;
+    appState.activeSceneIndex = null;
+  }
+  saveState();
+  renderScriptList();
+  updateSceneNavigator();
+  updateExportScreen();
+  updateSettingsScreen();
+  showToast('Script deleted');
 }
 
 function selectScript(id) {
