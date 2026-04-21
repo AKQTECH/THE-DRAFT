@@ -400,6 +400,25 @@ body {
   margin-bottom: 10px;
 }
 
+/* ========== EDITING STATES ========== */
+[contenteditable] {
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
+  transition: background 0.15s, box-shadow 0.15s;
+  border-radius: 4px;
+}
+[contenteditable]:focus {
+  outline: none;
+  background: rgba(246, 208, 247, 0.18);
+  box-shadow: inset 0 0 0 2px rgba(230, 103, 166, 0.25);
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+[contenteditable]:hover:not(:focus) {
+  background: rgba(246, 208, 247, 0.08);
+}
+
 .no-scene-msg {
   text-align: center;
   padding: 60px 24px;
@@ -770,7 +789,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.3</div>
+        <div class="settings-version">the draft v1.4</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -805,7 +824,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.3';
+const APP_VERSION = '1.4';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -841,14 +860,41 @@ function loadState() {
     if (saved) {
       const parsed = JSON.parse(saved);
       appState = { ...appState, ...parsed };
+      // Re-parse XML DOMs and relink paragraph references for each script
+      appState.scripts.forEach(script => {
+        if (script.rawXml) {
+          relinkXmlRefs(script);
+        }
+      });
     }
   } catch(e) { console.error('Failed to load state:', e); }
 }
 
 function saveState() {
   try {
-    localStorage.setItem('the_draft_state', JSON.stringify(appState));
+    // Before stringifying, update rawXml from live DOM and strip non-serializable refs
+    const toSave = JSON.parse(JSON.stringify(appState, (key, val) => {
+      if (key === 'xmlDoc' || key === 'xmlParagraph') return undefined;
+      return val;
+    }));
+    localStorage.setItem('the_draft_state', JSON.stringify(toSave));
   } catch(e) { console.error('Failed to save state:', e); }
+}
+
+function relinkXmlRefs(script) {
+  try {
+    const parser = new DOMParser();
+    script.xmlDoc = parser.parseFromString(script.rawXml, 'text/xml');
+    const contentEl = script.xmlDoc.querySelector('Content');
+    const paragraphs = contentEl ? contentEl.querySelectorAll('Paragraph') : script.xmlDoc.querySelectorAll('Paragraph');
+    script.scenes.forEach(scene => {
+      scene.elements.forEach(el => {
+        if (el.pIdx !== undefined && paragraphs[el.pIdx]) {
+          el.xmlParagraph = paragraphs[el.pIdx];
+        }
+      });
+    });
+  } catch(e) { console.error('Failed to relink XML refs:', e); }
 }
 
 // ========== NAVIGATION ==========
@@ -921,8 +967,10 @@ function parseFDX(xml, fileName, rawXml) {
   const scenes = [];
   let currentScene = null;
   let pageCount = 0;
+  let paragraphIndex = 0;
 
   paragraphs.forEach(p => {
+    const pIdx = paragraphIndex++;
     const type = p.getAttribute('Type') || '';
     const textEls = p.querySelectorAll('Text');
     let text = '';
@@ -943,7 +991,7 @@ function parseFDX(xml, fileName, rawXml) {
       pageCount++;
     }
     if (currentScene && trimmed) {
-      currentScene.elements.push({ type: type, text: trimmed });
+      currentScene.elements.push({ type: type, text: trimmed, pIdx: pIdx, xmlParagraph: p });
     }
   });
   if (currentScene) scenes.push(currentScene);
@@ -979,7 +1027,8 @@ function parseFDX(xml, fileName, rawXml) {
     scenes: scenes,
     totalPages: totalEstPages,
     importDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    rawXml: rawXml
+    rawXml: rawXml,
+    xmlDoc: xml
   };
 }
 
@@ -1057,35 +1106,109 @@ function renderEditor() {
   titleEl.textContent = scene.heading;
 
   let html = '';
-  scene.elements.forEach(el => {
+  const sceneIdx = appState.activeSceneIndex;
+  scene.elements.forEach((el, elIndex) => {
     const txt = el.text.trim();
     if (!txt || /^\.+$/.test(txt)) return;
+    const edAttr = `contenteditable="true" data-scene="${sceneIdx}" data-element="${elIndex}" data-type="${el.type}"`;
     switch(el.type) {
       case 'Scene Heading':
-        html += `<div class="fdx-scene-heading">${escHtml(formatSceneHeading(txt))}</div>`;
+        html += `<div class="fdx-scene-heading" ${edAttr}>${escHtml(formatSceneHeading(txt))}</div>`;
         break;
       case 'Action':
-        html += `<div class="fdx-action">${escHtml(txt)}</div>`;
+        html += `<div class="fdx-action" ${edAttr}>${escHtml(txt)}</div>`;
         break;
       case 'Character':
-        html += `<div class="fdx-character">${escHtml(txt)}</div>`;
+        html += `<div class="fdx-character" ${edAttr}>${escHtml(txt)}</div>`;
         break;
       case 'Dialogue':
-        html += `<div class="fdx-dialogue">${escHtml(txt)}</div>`;
+        html += `<div class="fdx-dialogue" ${edAttr}>${escHtml(txt)}</div>`;
         break;
       case 'Parenthetical':
-        html += `<div class="fdx-parenthetical">${escHtml(txt)}</div>`;
+        html += `<div class="fdx-parenthetical" ${edAttr}>${escHtml(txt)}</div>`;
         break;
       case 'Transition':
-        html += `<div class="fdx-transition">${escHtml(txt)}</div>`;
+        html += `<div class="fdx-transition" ${edAttr}>${escHtml(txt)}</div>`;
         break;
       default:
         if (!TITLE_PAGE_TYPES.has(el.type)) {
-          html += `<div class="fdx-general">${escHtml(txt)}</div>`;
+          html += `<div class="fdx-general" ${edAttr}>${escHtml(txt)}</div>`;
         }
     }
   });
   contentEl.innerHTML = html;
+  attachEditHandlers(contentEl);
+}
+
+// ========== EDIT HANDLERS ==========
+function attachEditHandlers(container) {
+  container.querySelectorAll('[contenteditable]').forEach(div => {
+    // Save edits on blur
+    div.addEventListener('blur', function() {
+      const sceneIdx = parseInt(this.dataset.scene);
+      const elIdx = parseInt(this.dataset.element);
+      const newText = this.textContent;
+      const script = getActiveScript();
+      if (!script) return;
+      const el = script.scenes[sceneIdx].elements[elIdx];
+      if (!el) return;
+      const oldText = el.text;
+      if (newText.trim() === oldText.trim()) return; // no change
+
+      // Update the in-memory element
+      el.text = newText.trim();
+
+      // If it's a scene heading, also update the scene heading display
+      if (el.type === 'Scene Heading') {
+        script.scenes[sceneIdx].heading = formatSceneHeading(newText.trim());
+        document.getElementById('editorSceneTitle').textContent = script.scenes[sceneIdx].heading;
+      }
+
+      // Update the XML DOM
+      updateXmlElement(script, sceneIdx, elIdx, newText.trim());
+
+      // Persist
+      saveState();
+      showToast('Edit saved');
+    });
+
+    // Prevent Enter key (no line breaks within an element)
+    div.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.blur(); // save on Enter
+      }
+    });
+
+    // Paste as plain text only
+    div.addEventListener('paste', function(e) {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      document.execCommand('insertText', false, text);
+    });
+  });
+}
+
+function updateXmlElement(script, sceneIdx, elIdx, newText) {
+  const el = script.scenes[sceneIdx].elements[elIdx];
+  if (!el || !el.xmlParagraph) return;
+
+  const textNodes = el.xmlParagraph.querySelectorAll('Text');
+  if (textNodes.length === 1) {
+    textNodes[0].textContent = newText;
+  } else if (textNodes.length > 1) {
+    // Multiple Text nodes (formatted runs). Collapse into one.
+    const firstText = textNodes[0];
+    firstText.textContent = newText;
+    for (let i = textNodes.length - 1; i > 0; i--) {
+      textNodes[i].parentNode.removeChild(textNodes[i]);
+    }
+  }
+
+  // Sync rawXml from the live DOM so export picks up all changes
+  if (script.xmlDoc) {
+    script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
+  }
 }
 
 function switchSceneTab(tab, btn) {
@@ -1185,18 +1308,20 @@ function handleExport() {
 }
 
 function exportFDX(script) {
-  if (script.rawXml) {
-    const blob = new Blob([script.rawXml], { type: 'text/xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = script.fileName || 'script.fdx';
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('FDX file downloaded');
-  } else {
+  // Use the latest rawXml which reflects all edits via updateXmlElement
+  const xml = script.rawXml;
+  if (!xml) {
     showToast('Original FDX data not available');
+    return;
   }
+  const blob = new Blob([xml], { type: 'text/xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = script.fileName || 'script.fdx';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('FDX exported with your edits');
 }
 
 function exportPDF(script, startIdx, endIdx) {
