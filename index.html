@@ -419,68 +419,104 @@ body {
   margin-bottom: 10px;
 }
 
-/* ========== EDITING STATES (textarea-based) ========== */
-.fdx-edit {
+/* ========== TAP-TO-EDIT ========== */
+.fdx-editable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.fdx-editable:active {
+  background: rgba(246, 208, 247, 0.15);
+}
+
+/* Edit modal overlay */
+.edit-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(28, 20, 16, 0.5);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+.edit-overlay.active {
+  display: flex;
+}
+.edit-sheet {
   width: 100%;
-  border: none;
-  background: transparent;
-  color: var(--warm-black);
-  font-family: 'DM Sans', sans-serif;
-  resize: none;
-  overflow: hidden;
-  padding: 4px 6px;
-  margin: -4px -6px;
-  border-radius: 6px;
-  transition: background 0.15s, box-shadow 0.15s;
-  -webkit-appearance: none;
-  appearance: none;
+  max-height: 70vh;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  padding: 0 0 calc(var(--safe-bottom) + 16px);
+  display: flex;
+  flex-direction: column;
 }
-.fdx-edit:focus {
-  outline: none;
-  background: rgba(246, 208, 247, 0.18);
-  box-shadow: inset 0 0 0 2px rgba(230, 103, 166, 0.25);
+.edit-sheet-handle {
+  width: 36px;
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+  margin: 10px auto 6px;
+  flex-shrink: 0;
 }
-/* Type-specific textarea styles */
-.fdx-edit-scene-heading {
-  font-size: 13px;
+.edit-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid rgba(246,208,247,0.4);
+  flex-shrink: 0;
+}
+.edit-sheet-type {
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  color: var(--mauve-rose);
 }
-.fdx-edit-action {
-  font-size: 13px;
-  line-height: 1.65;
-}
-.fdx-edit-character {
-  font-size: 12px;
+.edit-sheet-save {
+  background: var(--pink-header);
+  color: var(--pink-text);
+  font-family: 'DM Sans', sans-serif;
   font-weight: 800;
+  font-size: 12px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  text-align: center;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
 }
-.fdx-edit-dialogue {
-  font-size: 13px;
-  line-height: 1.55;
-  text-align: center;
-  max-width: 75%;
-  margin: 0 auto;
-}
-.fdx-edit-parenthetical {
-  font-size: 12px;
-  text-align: center;
-}
-.fdx-edit-transition {
-  font-size: 12px;
+.edit-sheet-save:active { transform: scale(0.97); }
+.edit-sheet-cancel {
+  background: none;
+  border: none;
+  color: var(--mauve-rose);
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
-  text-align: right;
-}
-.fdx-edit-general {
   font-size: 13px;
-  line-height: 1.5;
+  cursor: pointer;
+  padding: 8px;
 }
-/* Wrapper divs keep original spacing */
-.fdx-scene-heading .fdx-edit { margin-bottom: 0; }
-.fdx-dialogue { display: flex; justify-content: center; }
+.edit-sheet-textarea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #ffffff;
+  color: var(--warm-black);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 16px;
+  resize: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 120px;
+}
 
 .no-scene-msg {
   text-align: center;
@@ -852,7 +888,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.5</div>
+        <div class="settings-version">the draft v1.6</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -883,11 +919,24 @@ body {
   </div>
 </div>
 
+<!-- Edit Sheet (slides up from bottom) -->
+<div class="edit-overlay" id="editOverlay" onclick="cancelEdit(event)">
+  <div class="edit-sheet" onclick="event.stopPropagation()">
+    <div class="edit-sheet-handle"></div>
+    <div class="edit-sheet-header">
+      <button class="edit-sheet-cancel" onclick="closeEditSheet()">Cancel</button>
+      <span class="edit-sheet-type" id="editSheetType">Action</span>
+      <button class="edit-sheet-save" onclick="saveEdit()">Save</button>
+    </div>
+    <textarea class="edit-sheet-textarea" id="editSheetTextarea"></textarea>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.5';
+const APP_VERSION = '1.6';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -1188,100 +1237,111 @@ function renderEditor() {
   const scene = script.scenes[appState.activeSceneIndex];
   titleEl.textContent = scene.heading;
 
+  let html = '';
   const sceneIdx = appState.activeSceneIndex;
-  contentEl.innerHTML = '';
-
   scene.elements.forEach((el, elIndex) => {
     const txt = el.text.trim();
     if (!txt || /^\.+$/.test(txt)) return;
-
-    const typeClass = {
-      'Scene Heading': 'scene-heading',
-      'Action': 'action',
-      'Character': 'character',
-      'Dialogue': 'dialogue',
-      'Parenthetical': 'parenthetical',
-      'Transition': 'transition'
-    }[el.type] || 'general';
-
-    if (TITLE_PAGE_TYPES.has(el.type)) return;
-
-    // Wrapper div keeps original screenplay spacing
-    const wrapper = document.createElement('div');
-    wrapper.className = 'fdx-' + typeClass;
-    wrapper.style.marginBottom = (el.type === 'Character' ? '2px' : '12px');
-    if (el.type === 'Character') wrapper.style.marginTop = '12px';
-
-    // Textarea for actual editing
-    const ta = document.createElement('textarea');
-    ta.className = 'fdx-edit fdx-edit-' + typeClass;
-    ta.value = el.type === 'Scene Heading' ? formatSceneHeading(txt) : txt;
-    ta.rows = 1;
-    ta.dataset.scene = sceneIdx;
-    ta.dataset.element = elIndex;
-    ta.dataset.type = el.type;
-
-    wrapper.appendChild(ta);
-    contentEl.appendChild(wrapper);
-
-    // Auto-size textarea to fit content
-    autoResize(ta);
+    // Tap handler opens edit sheet for this element
+    const tap = `onclick="openEditSheet(${sceneIdx}, ${elIndex})"`;
+    switch(el.type) {
+      case 'Scene Heading':
+        html += `<div class="fdx-scene-heading fdx-editable" ${tap}>${escHtml(formatSceneHeading(txt))}</div>`;
+        break;
+      case 'Action':
+        html += `<div class="fdx-action fdx-editable" ${tap}>${escHtml(txt)}</div>`;
+        break;
+      case 'Character':
+        html += `<div class="fdx-character fdx-editable" ${tap}>${escHtml(txt)}</div>`;
+        break;
+      case 'Dialogue':
+        html += `<div class="fdx-dialogue fdx-editable" ${tap}>${escHtml(txt)}</div>`;
+        break;
+      case 'Parenthetical':
+        html += `<div class="fdx-parenthetical fdx-editable" ${tap}>${escHtml(txt)}</div>`;
+        break;
+      case 'Transition':
+        html += `<div class="fdx-transition fdx-editable" ${tap}>${escHtml(txt)}</div>`;
+        break;
+      default:
+        if (!TITLE_PAGE_TYPES.has(el.type)) {
+          html += `<div class="fdx-general fdx-editable" ${tap}>${escHtml(txt)}</div>`;
+        }
+    }
   });
-
-  // Attach handlers to all textareas
-  attachEditHandlers(contentEl);
+  contentEl.innerHTML = html;
 }
 
-function autoResize(ta) {
-  ta.style.height = 'auto';
-  ta.style.height = ta.scrollHeight + 'px';
+// ========== EDIT SHEET (tap-to-edit) ==========
+let editingSceneIdx = null;
+let editingElIdx = null;
+
+function openEditSheet(sceneIdx, elIdx) {
+  const script = getActiveScript();
+  if (!script) return;
+  const el = script.scenes[sceneIdx].elements[elIdx];
+  if (!el) return;
+
+  editingSceneIdx = sceneIdx;
+  editingElIdx = elIdx;
+
+  document.getElementById('editSheetType').textContent = el.type;
+  const ta = document.getElementById('editSheetTextarea');
+  ta.value = el.type === 'Scene Heading' ? formatSceneHeading(el.text) : el.text;
+  document.getElementById('editOverlay').classList.add('active');
+
+  // Focus the textarea after the sheet animates in
+  setTimeout(() => ta.focus(), 100);
 }
 
-// ========== EDIT HANDLERS ==========
-function attachEditHandlers(container) {
-  container.querySelectorAll('.fdx-edit').forEach(ta => {
-    // Auto-resize on input
-    ta.addEventListener('input', function() {
-      autoResize(this);
-    });
+function saveEdit() {
+  const script = getActiveScript();
+  if (!script || editingSceneIdx === null || editingElIdx === null) return;
 
-    // Save edits on blur
-    ta.addEventListener('blur', function() {
-      const sceneIdx = parseInt(this.dataset.scene);
-      const elIdx = parseInt(this.dataset.element);
-      const newText = this.value;
-      const script = getActiveScript();
-      if (!script) return;
-      const el = script.scenes[sceneIdx].elements[elIdx];
-      if (!el) return;
-      const oldText = el.text;
-      if (newText.trim() === oldText.trim()) return; // no change
+  const el = script.scenes[editingSceneIdx].elements[editingElIdx];
+  if (!el) return;
 
-      // Update the in-memory element
-      el.text = newText.trim();
+  const newText = document.getElementById('editSheetTextarea').value.trim();
+  if (!newText) {
+    showToast('Cannot save empty text');
+    return;
+  }
+  if (newText === el.text.trim()) {
+    closeEditSheet();
+    return;
+  }
 
-      // If it's a scene heading, also update the scene heading display
-      if (el.type === 'Scene Heading') {
-        script.scenes[sceneIdx].heading = formatSceneHeading(newText.trim());
-        document.getElementById('editorSceneTitle').textContent = script.scenes[sceneIdx].heading;
-      }
+  // Update in-memory element
+  el.text = newText;
 
-      // Update the XML DOM
-      updateXmlElement(script, sceneIdx, elIdx, newText.trim());
+  // Update scene heading display if needed
+  if (el.type === 'Scene Heading') {
+    script.scenes[editingSceneIdx].heading = formatSceneHeading(newText);
+    document.getElementById('editorSceneTitle').textContent = script.scenes[editingSceneIdx].heading;
+  }
 
-      // Persist
-      saveState();
-      showToast('Edit saved');
-    });
+  // Update XML DOM
+  updateXmlElement(script, editingSceneIdx, editingElIdx, newText);
 
-    // Prevent Enter key (no new lines — preserves FDX structure)
-    ta.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        this.blur();
-      }
-    });
-  });
+  // Persist and refresh
+  saveState();
+  renderEditor();
+  closeEditSheet();
+  showToast('Edit saved');
+}
+
+function closeEditSheet() {
+  document.getElementById('editOverlay').classList.remove('active');
+  document.getElementById('editSheetTextarea').blur();
+  editingSceneIdx = null;
+  editingElIdx = null;
+}
+
+function cancelEdit(event) {
+  // Only close if tapping the overlay background, not the sheet itself
+  if (event.target === event.currentTarget) {
+    closeEditSheet();
+  }
 }
 
 function updateXmlElement(script, sceneIdx, elIdx, newText) {
