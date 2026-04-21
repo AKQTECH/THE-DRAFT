@@ -419,29 +419,68 @@ body {
   margin-bottom: 10px;
 }
 
-/* Editor screen: allow overflow so iOS can focus contentEditable */
-#screen-editor {
-  overflow: visible;
-}
-
-/* ========== EDITING STATES ========== */
-[contenteditable] {
-  cursor: text;
-  -webkit-user-select: text;
-  user-select: text;
+/* ========== EDITING STATES (textarea-based) ========== */
+.fdx-edit {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--warm-black);
+  font-family: 'DM Sans', sans-serif;
+  resize: none;
+  overflow: hidden;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  border-radius: 6px;
   transition: background 0.15s, box-shadow 0.15s;
-  border-radius: 4px;
+  -webkit-appearance: none;
+  appearance: none;
 }
-[contenteditable]:focus {
+.fdx-edit:focus {
   outline: none;
   background: rgba(246, 208, 247, 0.18);
   box-shadow: inset 0 0 0 2px rgba(230, 103, 166, 0.25);
-  padding: 2px 4px;
-  margin: -2px -4px;
 }
-[contenteditable]:hover:not(:focus) {
-  background: rgba(246, 208, 247, 0.08);
+/* Type-specific textarea styles */
+.fdx-edit-scene-heading {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
+.fdx-edit-action {
+  font-size: 13px;
+  line-height: 1.65;
+}
+.fdx-edit-character {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+}
+.fdx-edit-dialogue {
+  font-size: 13px;
+  line-height: 1.55;
+  text-align: center;
+  max-width: 75%;
+  margin: 0 auto;
+}
+.fdx-edit-parenthetical {
+  font-size: 12px;
+  text-align: center;
+}
+.fdx-edit-transition {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+.fdx-edit-general {
+  font-size: 13px;
+  line-height: 1.5;
+}
+/* Wrapper divs keep original spacing */
+.fdx-scene-heading .fdx-edit { margin-bottom: 0; }
+.fdx-dialogue { display: flex; justify-content: center; }
 
 .no-scene-msg {
   text-align: center;
@@ -813,7 +852,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.4</div>
+        <div class="settings-version">the draft v1.5</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -848,7 +887,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.4';
+const APP_VERSION = '1.5';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -1149,49 +1188,68 @@ function renderEditor() {
   const scene = script.scenes[appState.activeSceneIndex];
   titleEl.textContent = scene.heading;
 
-  let html = '';
   const sceneIdx = appState.activeSceneIndex;
+  contentEl.innerHTML = '';
+
   scene.elements.forEach((el, elIndex) => {
     const txt = el.text.trim();
     if (!txt || /^\.+$/.test(txt)) return;
-    const edAttr = `contenteditable="true" tabindex="0" data-scene="${sceneIdx}" data-element="${elIndex}" data-type="${el.type}"`;
-    switch(el.type) {
-      case 'Scene Heading':
-        html += `<div class="fdx-scene-heading" ${edAttr}>${escHtml(formatSceneHeading(txt))}</div>`;
-        break;
-      case 'Action':
-        html += `<div class="fdx-action" ${edAttr}>${escHtml(txt)}</div>`;
-        break;
-      case 'Character':
-        html += `<div class="fdx-character" ${edAttr}>${escHtml(txt)}</div>`;
-        break;
-      case 'Dialogue':
-        html += `<div class="fdx-dialogue" ${edAttr}>${escHtml(txt)}</div>`;
-        break;
-      case 'Parenthetical':
-        html += `<div class="fdx-parenthetical" ${edAttr}>${escHtml(txt)}</div>`;
-        break;
-      case 'Transition':
-        html += `<div class="fdx-transition" ${edAttr}>${escHtml(txt)}</div>`;
-        break;
-      default:
-        if (!TITLE_PAGE_TYPES.has(el.type)) {
-          html += `<div class="fdx-general" ${edAttr}>${escHtml(txt)}</div>`;
-        }
-    }
+
+    const typeClass = {
+      'Scene Heading': 'scene-heading',
+      'Action': 'action',
+      'Character': 'character',
+      'Dialogue': 'dialogue',
+      'Parenthetical': 'parenthetical',
+      'Transition': 'transition'
+    }[el.type] || 'general';
+
+    if (TITLE_PAGE_TYPES.has(el.type)) return;
+
+    // Wrapper div keeps original screenplay spacing
+    const wrapper = document.createElement('div');
+    wrapper.className = 'fdx-' + typeClass;
+    wrapper.style.marginBottom = (el.type === 'Character' ? '2px' : '12px');
+    if (el.type === 'Character') wrapper.style.marginTop = '12px';
+
+    // Textarea for actual editing
+    const ta = document.createElement('textarea');
+    ta.className = 'fdx-edit fdx-edit-' + typeClass;
+    ta.value = el.type === 'Scene Heading' ? formatSceneHeading(txt) : txt;
+    ta.rows = 1;
+    ta.dataset.scene = sceneIdx;
+    ta.dataset.element = elIndex;
+    ta.dataset.type = el.type;
+
+    wrapper.appendChild(ta);
+    contentEl.appendChild(wrapper);
+
+    // Auto-size textarea to fit content
+    autoResize(ta);
   });
-  contentEl.innerHTML = html;
+
+  // Attach handlers to all textareas
   attachEditHandlers(contentEl);
+}
+
+function autoResize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
 }
 
 // ========== EDIT HANDLERS ==========
 function attachEditHandlers(container) {
-  container.querySelectorAll('[contenteditable]').forEach(div => {
+  container.querySelectorAll('.fdx-edit').forEach(ta => {
+    // Auto-resize on input
+    ta.addEventListener('input', function() {
+      autoResize(this);
+    });
+
     // Save edits on blur
-    div.addEventListener('blur', function() {
+    ta.addEventListener('blur', function() {
       const sceneIdx = parseInt(this.dataset.scene);
       const elIdx = parseInt(this.dataset.element);
-      const newText = this.textContent;
+      const newText = this.value;
       const script = getActiveScript();
       if (!script) return;
       const el = script.scenes[sceneIdx].elements[elIdx];
@@ -1216,35 +1274,12 @@ function attachEditHandlers(container) {
       showToast('Edit saved');
     });
 
-    // Prevent Enter key (no line breaks within an element)
-    div.addEventListener('keydown', function(e) {
+    // Prevent Enter key (no new lines — preserves FDX structure)
+    ta.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
-        this.blur(); // save on Enter
+        this.blur();
       }
-    });
-
-    // Paste as plain text only
-    div.addEventListener('paste', function(e) {
-      e.preventDefault();
-      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-      document.execCommand('insertText', false, text);
-    });
-
-    // iOS: programmatic focus nudge to bypass fixed-body suppression
-    div.addEventListener('touchend', function(e) {
-      const el = this;
-      setTimeout(() => {
-        el.focus();
-        const sel = window.getSelection();
-        if (sel.rangeCount === 0) {
-          const range = document.createRange();
-          range.selectNodeContents(el);
-          range.collapse(false);
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-      }, 50);
     });
   });
 }
