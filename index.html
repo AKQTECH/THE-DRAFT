@@ -61,7 +61,7 @@ body {
 }
 .app-logo {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 2px;
 }
 .app-logo-text {
@@ -72,9 +72,8 @@ body {
   letter-spacing: -0.5px;
 }
 .app-logo-tm-svg {
-  vertical-align: super;
+  margin-top: 3px;
   margin-left: 1px;
-  margin-bottom: 4px;
 }
 .header-title {
   font-size: 11px;
@@ -1044,7 +1043,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.9</div>
+        <div class="settings-version">the draft v2.1</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -1102,7 +1101,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.9';
+const APP_VERSION = '2.1';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -2026,12 +2025,34 @@ function exportFDX(script) {
   if (!xml.trim().startsWith('<?xml')) {
     xml = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n' + xml;
   }
-  const blob = new Blob([xml], { type: 'text/xml' });
+  // Use octet-stream so iOS Safari doesn't append .xml to the filename
+  const blob = new Blob([xml], { type: 'application/octet-stream' });
+  const fileName = script.fileName || 'script.fdx';
+
+  // iOS Safari: share sheet approach works more reliably than anchor download
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], fileName)] })) {
+    const file = new File([blob], fileName, { type: 'application/octet-stream' });
+    navigator.share({ files: [file], title: script.title })
+      .then(() => showToast('FDX shared'))
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          // Fallback to anchor download if share fails
+          anchorDownload(blob, fileName);
+        }
+      });
+  } else {
+    anchorDownload(blob, fileName);
+  }
+}
+
+function anchorDownload(blob, fileName) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = script.fileName || 'script.fdx';
+  a.download = fileName;
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast('FDX exported with your edits');
 }

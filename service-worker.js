@@ -1,4 +1,4 @@
-const CACHE_NAME = 'the-draft-v1-9';
+const CACHE_NAME = 'the-draft-v2-1';
 const ASSETS = [
   './',
   './index.html',
