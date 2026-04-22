@@ -1044,7 +1044,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.8</div>
+        <div class="settings-version">the draft v1.9</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -1102,7 +1102,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.8';
+const APP_VERSION = '1.9';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -1861,8 +1861,8 @@ function createNewScript() {
   const fileName = cleanTitle.replace(/\s+/g, '_') + '.fdx';
 
   // Build minimal valid FDX XML
-  const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
-<FinalDraft DocumentType="Script" Template="No" Version="4">
+  const xmlStr = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FinalDraft DocumentType="Script" Template="No" Version="6">
 <Content>
 <Paragraph Type="Scene Heading"><Text>INT. LOCATION - DAY</Text></Paragraph>
 </Content>
@@ -2017,10 +2017,14 @@ function handleExport() {
 
 function exportFDX(script) {
   // Use the latest rawXml which reflects all edits via updateXmlElement
-  const xml = script.rawXml;
+  let xml = script.rawXml;
   if (!xml) {
     showToast('Original FDX data not available');
     return;
+  }
+  // XMLSerializer strips the <?xml?> declaration — Final Draft requires it
+  if (!xml.trim().startsWith('<?xml')) {
+    xml = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n' + xml;
   }
   const blob = new Blob([xml], { type: 'text/xml' });
   const url = URL.createObjectURL(blob);
