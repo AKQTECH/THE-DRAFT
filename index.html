@@ -252,6 +252,16 @@ body {
   background: var(--pink-text);
   border-radius: 2px;
 }
+#sceneTabContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#searchPanel {
+  flex: 1;
+  overflow: hidden;
+}
 .scene-list {
   flex: 1;
   overflow-y: auto;
@@ -888,7 +898,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.6</div>
+        <div class="settings-version">the draft v1.7</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -936,7 +946,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.6';
+const APP_VERSION = '1.7';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -1369,14 +1379,16 @@ function updateXmlElement(script, sceneIdx, elIdx, newText) {
 function switchSceneTab(tab, btn) {
   document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  const sceneTabContent = document.getElementById('sceneTabContent');
   const listContainer = document.getElementById('scenesListContainer');
   const searchPanel = document.getElementById('searchPanel');
   if (tab === 'search') {
-    listContainer.style.display = 'none';
+    sceneTabContent.style.display = 'none';
     searchPanel.style.display = 'flex';
     searchPanel.style.flexDirection = 'column';
     searchPanel.style.flex = '1';
   } else {
+    sceneTabContent.style.display = 'flex';
     listContainer.style.display = 'block';
     searchPanel.style.display = 'none';
   }
