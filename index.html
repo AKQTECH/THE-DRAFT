@@ -480,13 +480,6 @@ body {
   border-bottom: 1px solid rgba(246,208,247,0.4);
   flex-shrink: 0;
 }
-.edit-sheet-type {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--mauve-rose);
-}
 .edit-sheet-save {
   background: var(--pink-header);
   color: var(--pink-text);
@@ -527,6 +520,155 @@ body {
   appearance: none;
   min-height: 120px;
 }
+
+/* Add-line button between elements */
+.add-line-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.25;
+  transition: opacity 0.2s;
+}
+.add-line-btn:active { opacity: 0.8; }
+.add-line-btn svg { pointer-events: none; }
+
+/* Type picker overlay */
+.type-picker-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(28, 20, 16, 0.5);
+  z-index: 250;
+  align-items: flex-end;
+  justify-content: center;
+}
+.type-picker-overlay.active { display: flex; }
+.type-picker-sheet {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  padding: 0 0 calc(var(--safe-bottom) + 16px);
+}
+.type-picker-handle {
+  width: 36px;
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+  margin: 10px auto 6px;
+}
+.type-picker-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mauve-rose);
+  text-align: center;
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid rgba(246,208,247,0.4);
+}
+.type-picker-list {
+  padding: 8px 16px;
+}
+.type-picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(246,208,247,0.3);
+  cursor: pointer;
+  transition: background 0.15s;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+}
+.type-picker-item:active { background: rgba(246, 208, 247, 0.15); }
+.type-picker-item:last-child { border-bottom: none; }
+.type-picker-item-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--warm-black);
+}
+.type-picker-item-hint {
+  font-size: 11px;
+  color: var(--mauve-rose);
+  opacity: 0.7;
+}
+.type-picker-item.suggested {
+  background: rgba(246, 208, 247, 0.12);
+}
+.type-picker-item.suggested .type-picker-item-label {
+  color: var(--accent-text);
+  font-weight: 800;
+}
+.type-picker-cancel {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 8px 16px 0;
+  padding: 14px;
+  background: var(--accent-bg);
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mauve-rose);
+  cursor: pointer;
+  text-align: center;
+}
+.type-picker-cancel:active { transform: scale(0.97); }
+
+/* Tappable type label in edit sheet */
+.edit-sheet-type {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--mauve-rose);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.edit-sheet-type:active {
+  background: rgba(246, 208, 247, 0.3);
+}
+.edit-sheet-type-arrow {
+  display: inline-block;
+  margin-left: 3px;
+  opacity: 0.5;
+}
+
+/* New script button on home */
+.new-script-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: none;
+  color: var(--accent-text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 2px dashed var(--accent-text);
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: transform 0.15s, background 0.15s;
+  opacity: 0.7;
+}
+.new-script-btn:active { transform: scale(0.97); background: rgba(246,208,247,0.1); }
 
 .no-scene-msg {
   text-align: center;
@@ -756,6 +898,10 @@ body {
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M10 14V3M6 7l4-4 4 4M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2"/></svg>
         Import .FDX File
       </button>
+      <button class="new-script-btn" onclick="createNewScript()">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/></svg>
+        New Script
+      </button>
       <input type="file" id="fdx-file-input" accept=".fdx" onchange="handleFDXImport(event)">
     </div>
   </div>
@@ -898,7 +1044,7 @@ body {
       </div>
 
       <div class="settings-about">
-        <div class="settings-version">the draft v1.7</div>
+        <div class="settings-version">the draft v1.8</div>
         <div class="settings-built">Built for April Korto Quioh</div>
       </div>
     </div>
@@ -935,10 +1081,20 @@ body {
     <div class="edit-sheet-handle"></div>
     <div class="edit-sheet-header">
       <button class="edit-sheet-cancel" onclick="closeEditSheet()">Cancel</button>
-      <span class="edit-sheet-type" id="editSheetType">Action</span>
+      <span class="edit-sheet-type" id="editSheetType" onclick="openTypePickerForRetype()">Action <svg class="edit-sheet-type-arrow" width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l3 3 3-3"/></svg></span>
       <button class="edit-sheet-save" onclick="saveEdit()">Save</button>
     </div>
     <textarea class="edit-sheet-textarea" id="editSheetTextarea"></textarea>
+  </div>
+</div>
+
+<!-- Type Picker (slides up from bottom) -->
+<div class="type-picker-overlay" id="typePickerOverlay" onclick="closeTypePicker()">
+  <div class="type-picker-sheet" onclick="event.stopPropagation()">
+    <div class="type-picker-handle"></div>
+    <div class="type-picker-title" id="typePickerTitle">Choose Element Type</div>
+    <div class="type-picker-list" id="typePickerList"></div>
+    <button class="type-picker-cancel" onclick="closeTypePicker()">Cancel</button>
   </div>
 </div>
 
@@ -946,7 +1102,7 @@ body {
 
 <script>
 // ========== APP STATE ==========
-const APP_VERSION = '1.7';
+const APP_VERSION = '1.8';
 let appState = {
   scripts: [],
   activeScriptId: null,
@@ -1223,7 +1379,11 @@ function updateSceneNavigator() {
       </div>
       <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#f6d0f7" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
     </div>
-  `).join('');
+  `).join('') + `
+    <button class="add-line-btn" style="opacity:0.5;padding:14px 0;" onclick="addNewScene()" aria-label="Add new scene">
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="var(--mauve-rose)" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><line x1="10" y1="6" x2="10" y2="14"/><line x1="6" y1="10" x2="14" y2="10"/></svg>
+      <span style="margin-left:8px;font-size:12px;font-weight:700;color:var(--mauve-rose);letter-spacing:1px;">ADD SCENE</span>
+    </button>`;
 }
 
 function openScene(index) {
@@ -1249,6 +1409,10 @@ function renderEditor() {
 
   let html = '';
   const sceneIdx = appState.activeSceneIndex;
+
+  // Add-line button helper (+ icon via SVG, no emoji)
+  const addBtn = (afterIdx) => `<button class="add-line-btn" onclick="openTypePickerForAdd(${sceneIdx}, ${afterIdx})" aria-label="Add element"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--mauve-rose)" stroke-width="1.5" opacity="0.6"><circle cx="10" cy="10" r="8"/><line x1="10" y1="6" x2="10" y2="14"/><line x1="6" y1="10" x2="14" y2="10"/></svg></button>`;
+
   scene.elements.forEach((el, elIndex) => {
     const txt = el.text.trim();
     if (!txt || /^\.+$/.test(txt)) return;
@@ -1278,13 +1442,23 @@ function renderEditor() {
           html += `<div class="fdx-general fdx-editable" ${tap}>${escHtml(txt)}</div>`;
         }
     }
+    // Add-line button after each element
+    html += addBtn(elIndex);
   });
+
+  // If scene is empty (new script), show a prominent add button
+  if (scene.elements.length === 0) {
+    html += `<div class="no-scene-msg"><p>Empty scene. Tap + to add your first element.</p></div>`;
+    html += addBtn(-1);
+  }
+
   contentEl.innerHTML = html;
 }
 
 // ========== EDIT SHEET (tap-to-edit) ==========
 let editingSceneIdx = null;
 let editingElIdx = null;
+let editingIsNew = false; // Track if we're editing a newly-added element
 
 function openEditSheet(sceneIdx, elIdx) {
   const script = getActiveScript();
@@ -1294,8 +1468,10 @@ function openEditSheet(sceneIdx, elIdx) {
 
   editingSceneIdx = sceneIdx;
   editingElIdx = elIdx;
+  editingIsNew = false;
 
-  document.getElementById('editSheetType').textContent = el.type;
+  const typeLabel = document.getElementById('editSheetType');
+  typeLabel.innerHTML = escHtml(el.type) + ' <svg class="edit-sheet-type-arrow" width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l3 3 3-3"/></svg>';
   const ta = document.getElementById('editSheetTextarea');
   ta.value = el.type === 'Scene Heading' ? formatSceneHeading(el.text) : el.text;
   document.getElementById('editOverlay').classList.add('active');
@@ -1316,7 +1492,7 @@ function saveEdit() {
     showToast('Cannot save empty text');
     return;
   }
-  if (newText === el.text.trim()) {
+  if (newText === el.text.trim() && !editingIsNew) {
     closeEditSheet();
     return;
   }
@@ -1334,17 +1510,51 @@ function saveEdit() {
   updateXmlElement(script, editingSceneIdx, editingElIdx, newText);
 
   // Persist and refresh
+  editingIsNew = false; // Clear new flag before close so ghost cleanup doesn't trigger
   saveState();
   renderEditor();
   closeEditSheet();
   showToast('Edit saved');
 }
 
+// Default placeholder texts for new elements
+const NEW_ELEMENT_PLACEHOLDERS = new Set([
+  '', ' ', 'INT. NEW LOCATION - DAY', 'CHARACTER NAME', '(beat)', 'CUT TO:'
+]);
+
 function closeEditSheet() {
+  // If this was a brand new element and user cancelled, remove the ghost element
+  if (editingIsNew && editingSceneIdx !== null && editingElIdx !== null) {
+    const script = getActiveScript();
+    if (script) {
+      const scene = script.scenes[editingSceneIdx];
+      const el = scene.elements[editingElIdx];
+      // Check if user's typed text in textarea differs from what we auto-filled
+      const taValue = document.getElementById('editSheetTextarea').value.trim();
+      const isUnchanged = NEW_ELEMENT_PLACEHOLDERS.has(taValue) || taValue === '';
+      if (el && isUnchanged) {
+        // Remove from XML DOM
+        if (el.xmlParagraph && el.xmlParagraph.parentNode) {
+          el.xmlParagraph.parentNode.removeChild(el.xmlParagraph);
+        }
+        // Remove from elements array
+        scene.elements.splice(editingElIdx, 1);
+        // Sync rawXml and reindex
+        if (script.xmlDoc) {
+          script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
+          reindexParagraphs(script);
+        }
+        saveState();
+      }
+    }
+  }
   document.getElementById('editOverlay').classList.remove('active');
   document.getElementById('editSheetTextarea').blur();
+  // Re-render editor to pick up any type changes or ghost removal
+  renderEditor();
   editingSceneIdx = null;
   editingElIdx = null;
+  editingIsNew = false;
 }
 
 function cancelEdit(event) {
@@ -1374,6 +1584,337 @@ function updateXmlElement(script, sceneIdx, elIdx, newText) {
   if (script.xmlDoc) {
     script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
   }
+}
+
+// ========== TYPE PICKER ==========
+const ELEMENT_TYPES = [
+  { type: 'Scene Heading', hint: 'INT. / EXT.' },
+  { type: 'Action', hint: 'Description' },
+  { type: 'Character', hint: 'Speaker name' },
+  { type: 'Dialogue', hint: 'Spoken lines' },
+  { type: 'Parenthetical', hint: 'Acting note' },
+  { type: 'Transition', hint: 'CUT TO:' }
+];
+
+// Smart type inference based on previous element
+function suggestNextType(prevType) {
+  switch(prevType) {
+    case 'Character': return 'Dialogue';
+    case 'Dialogue': return 'Character';
+    case 'Parenthetical': return 'Dialogue';
+    case 'Scene Heading': return 'Action';
+    case 'Transition': return 'Scene Heading';
+    case 'Action': return 'Character';
+    default: return 'Action';
+  }
+}
+
+let typePickerCallback = null;
+
+function openTypePicker(title, suggestedType, callback) {
+  typePickerCallback = callback;
+  document.getElementById('typePickerTitle').textContent = title;
+  const list = document.getElementById('typePickerList');
+  // Sort so suggested type is first
+  const sorted = [...ELEMENT_TYPES].sort((a, b) => {
+    if (a.type === suggestedType) return -1;
+    if (b.type === suggestedType) return 1;
+    return 0;
+  });
+  list.innerHTML = sorted.map(et => {
+    const isSuggested = et.type === suggestedType;
+    return `<button class="type-picker-item${isSuggested ? ' suggested' : ''}" onclick="selectType('${et.type}')">
+      <span class="type-picker-item-label">${et.type}${isSuggested ? ' (suggested)' : ''}</span>
+      <span class="type-picker-item-hint">${et.hint}</span>
+    </button>`;
+  }).join('');
+  document.getElementById('typePickerOverlay').classList.add('active');
+}
+
+function closeTypePicker() {
+  document.getElementById('typePickerOverlay').classList.remove('active');
+  typePickerCallback = null;
+}
+
+function selectType(type) {
+  const cb = typePickerCallback;
+  closeTypePicker();
+  if (cb) cb(type);
+}
+
+// ========== ADD NEW ELEMENT ==========
+function openTypePickerForAdd(sceneIdx, afterElIdx) {
+  const script = getActiveScript();
+  if (!script) return;
+  const scene = script.scenes[sceneIdx];
+
+  // Determine suggestion based on previous element
+  let prevType = 'Action';
+  if (afterElIdx >= 0 && afterElIdx < scene.elements.length) {
+    prevType = scene.elements[afterElIdx].type;
+  }
+  const suggested = suggestNextType(prevType);
+
+  openTypePicker('Add New Element', suggested, function(chosenType) {
+    addNewElement(sceneIdx, afterElIdx, chosenType);
+  });
+}
+
+function addNewElement(sceneIdx, afterElIdx, type) {
+  const script = getActiveScript();
+  if (!script) return;
+  const scene = script.scenes[sceneIdx];
+
+  // Create new XML paragraph in the DOM
+  const newParagraph = script.xmlDoc.createElement('Paragraph');
+  newParagraph.setAttribute('Type', type);
+  const newText = script.xmlDoc.createElement('Text');
+  newText.textContent = type === 'Scene Heading' ? 'INT. NEW LOCATION - DAY' :
+                        type === 'Character' ? 'CHARACTER NAME' :
+                        type === 'Parenthetical' ? '(beat)' :
+                        type === 'Transition' ? 'CUT TO:' : ' ';
+  newParagraph.appendChild(newText);
+
+  // Insert into XML DOM after the reference element
+  const contentEl = script.xmlDoc.querySelector('Content');
+  if (afterElIdx >= 0 && scene.elements[afterElIdx] && scene.elements[afterElIdx].xmlParagraph) {
+    const refParagraph = scene.elements[afterElIdx].xmlParagraph;
+    refParagraph.parentNode.insertBefore(newParagraph, refParagraph.nextSibling);
+  } else if (scene.elements.length > 0 && scene.elements[0].xmlParagraph) {
+    // Insert before first element of scene
+    scene.elements[0].xmlParagraph.parentNode.insertBefore(newParagraph, scene.elements[0].xmlParagraph);
+  } else {
+    // Append to content
+    contentEl.appendChild(newParagraph);
+  }
+
+  // Sync rawXml
+  script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
+
+  // Re-index all pIdx values by re-scanning the XML
+  reindexParagraphs(script);
+
+  // Create new in-memory element
+  const newEl = {
+    type: type,
+    text: newText.textContent,
+    pIdx: -1, // will be set by reindex
+    xmlParagraph: newParagraph
+  };
+
+  // Find the correct pIdx for the new element
+  const allParagraphs = contentEl.querySelectorAll('Paragraph');
+  for (let i = 0; i < allParagraphs.length; i++) {
+    if (allParagraphs[i] === newParagraph) {
+      newEl.pIdx = i;
+      break;
+    }
+  }
+
+  // Insert into scene elements array
+  const insertIdx = afterElIdx + 1;
+  scene.elements.splice(insertIdx, 0, newEl);
+
+  // Update scene heading if new element is a Scene Heading
+  if (type === 'Scene Heading' && insertIdx === 0) {
+    scene.heading = formatSceneHeading(newEl.text);
+  }
+
+  // Reindex all pIdx across all scenes
+  reindexParagraphs(script);
+
+  saveState();
+  renderEditor();
+
+  // Auto-open edit sheet for the new element, flagged as new
+  setTimeout(() => {
+    openEditSheet(sceneIdx, insertIdx);
+    editingIsNew = true;
+  }, 150);
+}
+
+function reindexParagraphs(script) {
+  const contentEl = script.xmlDoc.querySelector('Content');
+  if (!contentEl) return;
+  const allParagraphs = contentEl.querySelectorAll('Paragraph');
+  script.scenes.forEach(scene => {
+    scene.elements.forEach(el => {
+      if (el.xmlParagraph) {
+        for (let i = 0; i < allParagraphs.length; i++) {
+          if (allParagraphs[i] === el.xmlParagraph) {
+            el.pIdx = i;
+            break;
+          }
+        }
+      }
+    });
+  });
+}
+
+// ========== ADD NEW SCENE ==========
+function addNewScene() {
+  const script = getActiveScript();
+  if (!script) return;
+
+  // Create scene heading in XML DOM
+  const newParagraph = script.xmlDoc.createElement('Paragraph');
+  newParagraph.setAttribute('Type', 'Scene Heading');
+  const newText = script.xmlDoc.createElement('Text');
+  newText.textContent = 'INT. NEW LOCATION - DAY';
+  newParagraph.appendChild(newText);
+
+  const contentEl = script.xmlDoc.querySelector('Content');
+  contentEl.appendChild(newParagraph);
+
+  // Sync rawXml
+  script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
+
+  // Get pIdx
+  const allParagraphs = contentEl.querySelectorAll('Paragraph');
+  const pIdx = allParagraphs.length - 1;
+
+  // Create scene object
+  const newScene = {
+    heading: 'INT. NEW LOCATION - DAY',
+    elements: [{
+      type: 'Scene Heading',
+      text: 'INT. NEW LOCATION - DAY',
+      pIdx: pIdx,
+      xmlParagraph: newParagraph
+    }],
+    startPage: script.totalPages + 1,
+    endPage: script.totalPages + 1
+  };
+
+  script.scenes.push(newScene);
+  script.totalPages++;
+
+  saveState();
+  updateSceneNavigator();
+  renderScriptList();
+
+  // Navigate to new scene
+  appState.activeSceneIndex = script.scenes.length - 1;
+  saveState();
+  renderEditor();
+  navigateTo('editor');
+  showToast('New scene added');
+}
+
+// ========== RETYPE ELEMENT ==========
+function openTypePickerForRetype() {
+  if (editingSceneIdx === null || editingElIdx === null) return;
+  const script = getActiveScript();
+  if (!script) return;
+  const el = script.scenes[editingSceneIdx].elements[editingElIdx];
+  if (!el) return;
+
+  openTypePicker('Change Element Type', el.type, function(newType) {
+    if (newType === el.type) return; // No change
+    changeElementType(editingSceneIdx, editingElIdx, newType);
+  });
+}
+
+function changeElementType(sceneIdx, elIdx, newType) {
+  const script = getActiveScript();
+  if (!script) return;
+  const el = script.scenes[sceneIdx].elements[elIdx];
+  if (!el) return;
+
+  const oldType = el.type;
+  el.type = newType;
+
+  // Update XML DOM
+  if (el.xmlParagraph) {
+    el.xmlParagraph.setAttribute('Type', newType);
+  }
+
+  // Update scene heading if we changed the first Scene Heading
+  if (oldType === 'Scene Heading' && elIdx === 0) {
+    // Scene lost its heading type — use next Scene Heading or first element
+    const nextHeading = script.scenes[sceneIdx].elements.find(e => e.type === 'Scene Heading');
+    script.scenes[sceneIdx].heading = nextHeading ? formatSceneHeading(nextHeading.text) : 'UNTITLED SCENE';
+  }
+  if (newType === 'Scene Heading' && elIdx === 0) {
+    script.scenes[sceneIdx].heading = formatSceneHeading(el.text);
+  }
+
+  // Sync rawXml
+  if (script.xmlDoc) {
+    script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
+  }
+
+  // Update the edit sheet type label
+  const typeLabel = document.getElementById('editSheetType');
+  typeLabel.innerHTML = escHtml(newType) + ' <svg class="edit-sheet-type-arrow" width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l3 3 3-3"/></svg>';
+
+  saveState();
+  showToast('Changed to ' + newType);
+}
+
+// ========== CREATE NEW SCRIPT ==========
+function createNewScript() {
+  const title = prompt('Script title:');
+  if (!title || !title.trim()) return;
+
+  const cleanTitle = title.trim().toUpperCase();
+  const fileName = cleanTitle.replace(/\s+/g, '_') + '.fdx';
+
+  // Build minimal valid FDX XML
+  const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="4">
+<Content>
+<Paragraph Type="Scene Heading"><Text>INT. LOCATION - DAY</Text></Paragraph>
+</Content>
+<TitlePage>
+<Content>
+<Paragraph Type="Script Title"><Text>${escXml(cleanTitle)}</Text></Paragraph>
+</Content>
+</TitlePage>
+</FinalDraft>`;
+
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlStr, 'text/xml');
+  const contentEl = xmlDoc.querySelector('FinalDraft > Content');
+  const firstP = contentEl.querySelector('Paragraph');
+
+  const script = {
+    id: 'script_' + Date.now(),
+    title: cleanTitle,
+    fileName: fileName,
+    scenes: [{
+      heading: 'INT. LOCATION - DAY',
+      elements: [{
+        type: 'Scene Heading',
+        text: 'INT. LOCATION - DAY',
+        pIdx: 0,
+        xmlParagraph: firstP
+      }],
+      startPage: 1,
+      endPage: 1
+    }],
+    totalPages: 1,
+    importDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    rawXml: xmlStr,
+    xmlDoc: xmlDoc
+  };
+
+  appState.scripts.push(script);
+  appState.activeScriptId = script.id;
+  appState.activeSceneIndex = 0;
+  saveState();
+  renderScriptList();
+  updateSceneNavigator();
+  updateExportScreen();
+  updateSettingsScreen();
+  renderEditor();
+  navigateTo('scenes');
+  showToast(cleanTitle + ' created');
+}
+
+// Helper: escape for XML attribute/text content
+function escXml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function switchSceneTab(tab, btn) {
