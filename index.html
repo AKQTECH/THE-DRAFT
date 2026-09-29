@@ -1,2215 +1,594 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#d90060">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#E668A7">
-<title>the draft</title>
+<title>The Draft</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="icon.png">
+<link rel="icon" href="icon.png" type="image/png">
 <link rel="apple-touch-icon" href="icon.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Courier+Prime&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --pink-header: #E668A7;
-  --pink-text: #fcd7f1;
-  --accent-bg: #f6d0f7;
-  --accent-text: #e667a6;
-  --warm-black: #1C1410;
-  --mauve-rose: #965b6d;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: #ffffff;
-  color: var(--warm-black);
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-/* ========== APP SHELL ========== */
-.app-shell {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  height: 100dvh;
-}
-.screen {
-  display: none;
-  flex: 1;
-  flex-direction: column;
-  overflow: hidden;
-}
-.screen.active { display: flex; }
-
-/* ========== HEADER ========== */
-.app-header {
-  background: var(--pink-header);
-  padding: calc(var(--safe-top) + 12px) 16px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-.app-logo {
-  display: flex;
-  align-items: flex-start;
-  gap: 2px;
-}
-.app-logo-text {
-  font-family: 'DM Sans', serif;
-  font-weight: 800;
-  font-size: 20px;
-  color: var(--pink-text);
-  letter-spacing: -0.5px;
-}
-.app-logo-tm-svg {
-  margin-top: 3px;
-  margin-left: 1px;
-}
-.header-title {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--pink-text);
-}
-
-/* ========== BOTTOM NAV ========== */
-.bottom-nav {
-  display: flex;
-  background: var(--pink-header);
-  padding: 6px 0 calc(var(--safe-bottom) + 6px);
-  flex-shrink: 0;
-}
-.nav-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px 4px;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-}
-.nav-btn.active { opacity: 1; }
-.nav-btn svg { width: 22px; height: 22px; }
-.nav-label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--pink-text);
-}
-
-/* ========== HOME SCREEN ========== */
-.home-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 20px 16px;
-  background: #ffffff;
-}
-.home-section-label {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--mauve-rose);
-  margin-bottom: 12px;
-}
-
-.script-list { margin-bottom: 20px; }
-.script-card {
-  background: var(--accent-bg);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: transform 0.15s;
-  box-shadow: 0 2px 8px rgba(28,20,16,0.06);
-}
-.script-card:active { transform: scale(0.98); }
-.script-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--pink-header);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.script-name {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--accent-text);
-}
-.script-meta {
-  font-size: 12px;
-  color: var(--accent-text);
-  opacity: 0.7;
-  margin-top: 2px;
-}
-.script-delete-btn {
-  background: none;
-  border: none;
-  color: var(--mauve-rose);
-  opacity: 0.5;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.15s, color 0.15s;
-}
-.script-delete-btn:active {
-  opacity: 1;
-  color: var(--pink-header);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--mauve-rose);
-}
-.empty-state p {
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.import-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--pink-header);
-  color: var(--pink-text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 16px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  transition: transform 0.15s;
-}
-.import-btn:active { transform: scale(0.97); }
-#fdx-file-input { display: none; }
-
-/* ========== SCENE NAVIGATOR ========== */
-.scene-tabs {
-  display: flex;
-  background: var(--pink-header);
-  flex-shrink: 0;
-}
-.scene-tab {
-  flex: 1;
-  text-align: center;
-  padding: 12px 4px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--pink-text);
-  opacity: 0.5;
-  background: none;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: opacity 0.2s;
-}
-.scene-tab.active { opacity: 1; }
-.scene-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 25%;
-  right: 25%;
-  height: 3px;
-  background: var(--pink-text);
-  border-radius: 2px;
-}
-#sceneTabContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-#searchPanel {
-  flex: 1;
-  overflow: hidden;
-}
-.scene-list {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 8px 12px;
-  background: #ffffff;
-}
-.scene-item {
-  display: flex;
-  align-items: center;
-  padding: 14px 10px;
-  border-bottom: 1px solid rgba(246,208,247,0.5);
-  gap: 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-  border-radius: 8px;
-}
-.scene-item:active { background: rgba(246,208,247,0.2); }
-.scene-num {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--pink-header);
-  color: var(--pink-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-.scene-info { flex: 1; min-width: 0; }
-.scene-heading-text {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--warm-black);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-}
-.scene-pages {
-  font-size: 11px;
-  color: var(--mauve-rose);
-  margin-top: 2px;
-}
-.scene-arrow {
-  opacity: 0.4;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-}
-.scene-search-bar {
-  padding: 12px;
-  flex-shrink: 0;
-  background: #ffffff;
-}
-.scene-search-input {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 2px solid var(--accent-bg);
-  background: #ffffff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  color: var(--warm-black);
-  outline: none;
-}
-.scene-search-input:focus { border-color: var(--pink-header); }
-.scene-search-input::placeholder { color: var(--mauve-rose); }
-
-.no-script-msg {
-  text-align: center;
-  padding: 60px 24px;
-  color: var(--mauve-rose);
-}
-.no-script-msg p { font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
-
-/* ========== EDITOR ========== */
-.editor-back-bar {
-  background: var(--pink-header);
-  padding: 8px 16px;
-  flex-shrink: 0;
-}
-.editor-back-btn {
-  background: none;
-  border: none;
-  color: var(--pink-text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.editor-scene-header {
-  padding: 14px 16px 10px;
-  background: var(--accent-bg);
-  border-bottom: 3px solid var(--pink-header);
-  flex-shrink: 0;
-}
-.editor-scene-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--accent-text);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-.editor-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  background: #ffffff;
-  padding: 16px;
-}
-.fdx-scene-heading {
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--warm-black);
-  margin-bottom: 12px;
-}
-.fdx-action {
-  font-size: 13px;
-  line-height: 1.65;
-  color: var(--warm-black);
-  margin-bottom: 12px;
-}
-.fdx-character {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--warm-black);
-  margin: 12px 0 2px;
-}
-.fdx-dialogue {
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--warm-black);
-  text-align: center;
-  max-width: 75%;
-  margin: 0 auto 12px;
-}
-.fdx-parenthetical {
-  font-size: 12px;
-  color: var(--warm-black);
-  text-align: center;
-  margin: 0 auto 2px;
-}
-.fdx-transition {
-  font-size: 12px;
-  font-weight: 700;
-  text-align: right;
-  color: var(--warm-black);
-  margin: 12px 0;
-}
-.fdx-general {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--warm-black);
-  margin-bottom: 10px;
-}
-
-/* ========== TAP-TO-EDIT ========== */
-.fdx-editable {
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.15s;
-}
-.fdx-editable:active {
-  background: rgba(246, 208, 247, 0.15);
-}
-
-/* Edit modal overlay */
-.edit-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(28, 20, 16, 0.5);
-  z-index: 200;
-  align-items: flex-end;
-  justify-content: center;
-}
-.edit-overlay.active {
-  display: flex;
-}
-.edit-sheet {
-  width: 100%;
-  max-height: 70vh;
-  background: #ffffff;
-  border-radius: 20px 20px 0 0;
-  padding: 0 0 calc(var(--safe-bottom) + 16px);
-  display: flex;
-  flex-direction: column;
-}
-.edit-sheet-handle {
-  width: 36px;
-  height: 4px;
-  background: #ccc;
-  border-radius: 2px;
-  margin: 10px auto 6px;
-  flex-shrink: 0;
-}
-.edit-sheet-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 16px 12px;
-  border-bottom: 1px solid rgba(246,208,247,0.4);
-  flex-shrink: 0;
-}
-.edit-sheet-save {
-  background: var(--pink-header);
-  color: var(--pink-text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 8px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-.edit-sheet-save:active { transform: scale(0.97); }
-.edit-sheet-cancel {
-  background: none;
-  border: none;
-  color: var(--mauve-rose);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 8px;
-}
-.edit-sheet-textarea {
-  flex: 1;
-  width: 100%;
-  border: none;
-  background: #ffffff;
-  color: var(--warm-black);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  padding: 16px;
-  resize: none;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  min-height: 120px;
-}
-
-/* Add-line button between elements */
-.add-line-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 4px 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  opacity: 0.25;
-  transition: opacity 0.2s;
-}
-.add-line-btn:active { opacity: 0.8; }
-.add-line-btn svg { pointer-events: none; }
-
-/* Type picker overlay */
-.type-picker-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(28, 20, 16, 0.5);
-  z-index: 250;
-  align-items: flex-end;
-  justify-content: center;
-}
-.type-picker-overlay.active { display: flex; }
-.type-picker-sheet {
-  width: 100%;
-  background: #ffffff;
-  border-radius: 20px 20px 0 0;
-  padding: 0 0 calc(var(--safe-bottom) + 16px);
-}
-.type-picker-handle {
-  width: 36px;
-  height: 4px;
-  background: #ccc;
-  border-radius: 2px;
-  margin: 10px auto 6px;
-}
-.type-picker-title {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--mauve-rose);
-  text-align: center;
-  padding: 8px 16px 12px;
-  border-bottom: 1px solid rgba(246,208,247,0.4);
-}
-.type-picker-list {
-  padding: 8px 16px;
-}
-.type-picker-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 12px;
-  border-bottom: 1px solid rgba(246,208,247,0.3);
-  cursor: pointer;
-  transition: background 0.15s;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  width: 100%;
-  text-align: left;
-  font-family: 'DM Sans', sans-serif;
-}
-.type-picker-item:active { background: rgba(246, 208, 247, 0.15); }
-.type-picker-item:last-child { border-bottom: none; }
-.type-picker-item-label {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--warm-black);
-}
-.type-picker-item-hint {
-  font-size: 11px;
-  color: var(--mauve-rose);
-  opacity: 0.7;
-}
-.type-picker-item.suggested {
-  background: rgba(246, 208, 247, 0.12);
-}
-.type-picker-item.suggested .type-picker-item-label {
-  color: var(--accent-text);
-  font-weight: 800;
-}
-.type-picker-cancel {
-  display: block;
-  width: calc(100% - 32px);
-  margin: 8px 16px 0;
-  padding: 14px;
-  background: var(--accent-bg);
-  border: none;
-  border-radius: 12px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--mauve-rose);
-  cursor: pointer;
-  text-align: center;
-}
-.type-picker-cancel:active { transform: scale(0.97); }
-
-/* Tappable type label in edit sheet */
-.edit-sheet-type {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--mauve-rose);
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
-  transition: background 0.15s;
-}
-.edit-sheet-type:active {
-  background: rgba(246, 208, 247, 0.3);
-}
-.edit-sheet-type-arrow {
-  display: inline-block;
-  margin-left: 3px;
-  opacity: 0.5;
-}
-
-/* New script button on home */
-.new-script-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: none;
-  color: var(--accent-text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 1px;
-  padding: 14px;
-  border-radius: 14px;
-  border: 2px dashed var(--accent-text);
-  cursor: pointer;
-  width: 100%;
-  margin-top: 10px;
-  transition: transform 0.15s, background 0.15s;
-  opacity: 0.7;
-}
-.new-script-btn:active { transform: scale(0.97); background: rgba(246,208,247,0.1); }
-
-.no-scene-msg {
-  text-align: center;
-  padding: 60px 24px;
-  color: var(--mauve-rose);
-}
-.no-scene-msg p { font-size: 14px; line-height: 1.6; }
-
-/* ========== EXPORT ========== */
-.export-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 16px;
-  background: #ffffff;
-}
-.export-option {
-  background: var(--accent-bg);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.15s;
-  box-shadow: 0 2px 8px rgba(28,20,16,0.06);
-}
-.export-option.selected { border-color: var(--pink-header); }
-.export-option:active { transform: scale(0.98); }
-.export-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.export-title { font-size: 14px; font-weight: 700; color: var(--accent-text); }
-.export-desc { font-size: 11px; color: var(--accent-text); opacity: 0.7; margin-top: 2px; }
-.export-go-btn {
-  display: block;
-  width: 100%;
-  background: var(--pink-header);
-  color: var(--pink-text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  padding: 16px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  margin-top: 16px;
-  transition: transform 0.15s;
-}
-.export-go-btn:active { transform: scale(0.97); }
-.export-go-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.range-inputs {
-  display: none;
-  gap: 10px;
-  margin-top: 10px;
-  align-items: center;
-}
-.range-inputs.visible { display: flex; }
-.range-input {
-  flex: 1;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 2px solid var(--accent-bg);
-  background: #ffffff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--warm-black);
-  text-align: center;
-  outline: none;
-}
-.range-input:focus { border-color: var(--pink-header); }
-.range-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--mauve-rose);
-}
-
-/* ========== SETTINGS ========== */
-.settings-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 16px;
-  background: #ffffff;
-}
-.settings-group {
-  background: var(--accent-bg);
-  border-radius: 14px;
-  margin-bottom: 14px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(28,20,16,0.06);
-}
-.settings-group-title {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--mauve-rose);
-  padding: 16px 16px 6px;
-}
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(230,103,166,0.1);
-}
-.settings-row:last-child { border-bottom: none; }
-.settings-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--accent-text);
-}
-.settings-value {
-  font-size: 13px;
-  color: var(--accent-text);
-  opacity: 0.7;
-  font-weight: 500;
-}
-.settings-btn {
-  background: var(--pink-header);
-  color: var(--pink-text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-.settings-about {
-  text-align: center;
-  padding: 24px 16px;
-  color: var(--mauve-rose);
-}
-.settings-version {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--mauve-rose);
-  margin-bottom: 4px;
-}
-.settings-built {
-  font-size: 12px;
-  color: var(--mauve-rose);
-  opacity: 0.6;
-}
-
-/* Toggle switch */
-.toggle {
-  width: 48px;
-  height: 28px;
-  border-radius: 14px;
-  background: #ccc;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.toggle.on { background: var(--pink-header); }
-.toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: white;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-}
-.toggle.on::after { transform: translateX(20px); }
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--warm-black);
-  color: #ffffff;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 12px 24px;
-  border-radius: 12px;
-  opacity: 0;
-  transition: all 0.3s;
-  z-index: 100;
-  pointer-events: none;
-}
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+:root{--pink:#d90060;--blush:#f6d0f6;--white:#fff;--ink:#242024;--line:#ecd5e4;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{margin:0;min-height:100%;font-family:"DM Sans",Arial,sans-serif;color:var(--ink);background:var(--white)}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.app{height:100dvh;min-height:400px;display:flex;flex-direction:column;overflow:hidden}.top{background:var(--pink);color:var(--blush);padding:calc(12px + var(--safe-top)) 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none}.brand{font-size:19px;font-weight:800;letter-spacing:.02em}.status{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;text-align:right}.status.error{color:#fff}
+.screen{display:none;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px 36px}.screen.active{display:block}.wrap{max-width:850px;margin:0 auto}.nav{flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--pink);padding:5px 3px calc(5px + var(--safe-bottom));gap:2px}.nav button{border:0;background:transparent;color:var(--blush);min-height:48px;text-transform:uppercase;letter-spacing:.09em;font-size:10px;font-weight:800;opacity:.64}.nav button.active{opacity:1;border-bottom:3px solid var(--blush)}
+h1,h2,h3,p{margin-top:0}h1{font-size:25px;line-height:1.2}h2{font-size:15px;text-transform:uppercase;letter-spacing:.1em;font-weight:800}h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:800}.intro{font-size:15px;line-height:1.6;max-width:58ch}.eyebrow,.field-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--pink)}.eyebrow{margin-bottom:8px}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0}.tint{background:var(--blush);color:var(--pink);border-color:var(--blush)}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.between{justify-content:space-between}.stack{display:grid;gap:12px}.muted{font-size:13px;line-height:1.55;color:#66535e}.small{font-size:12px}.spacer{height:10px}
+.button{border:1px solid var(--pink);background:var(--pink);color:var(--blush);border-radius:10px;min-height:44px;padding:10px 16px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}.button.secondary{background:var(--blush);color:var(--pink)}.button.ghost{background:var(--white);color:var(--pink)}.button.danger{background:var(--white);color:#a12b51;border-color:#a12b51}.button:active{transform:scale(.98)}.button.wide{width:100%}
+.input{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);padding:10px 12px;font-size:15px}.input:focus{border-color:var(--pink)}textarea.input{resize:vertical;min-height:190px;line-height:1.5}.field{display:grid;gap:7px;margin:12px 0}.field-label{display:block}
+.doc-card{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;display:flex;gap:12px;align-items:center;justify-content:space-between}.doc-card strong{font-size:15px}.doc-card .muted{margin:4px 0 0}.card-actions{display:flex;gap:7px;flex-wrap:wrap}.card-actions .button{padding:8px 10px}
+.scene-card{width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:15px;margin:7px 0;min-height:56px;color:var(--ink)}.scene-card strong{display:block;font-size:13px}.scene-card span{display:block;color:#66535e;font-size:12px;margin-top:4px}
+.toolbar{position:sticky;top:-20px;z-index:2;background:var(--white);padding:0 0 12px;border-bottom:1px solid var(--line);margin-bottom:16px}.toolbar h1{font-size:20px;margin-bottom:10px}.toolbar select{max-width:100%}
+.paper{max-width:740px;margin:16px auto;background:#fff;border:1px solid var(--line);box-shadow:0 6px 22px #2b102010;padding:24px 18px}.paragraph{position:relative;display:block;border:1px solid transparent;border-radius:6px;background:#fff;padding:7px 8px;margin:2px 0;width:100%;text-align:left;min-height:38px;color:#111;font:14px/1.4 "Courier New",Courier,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.paragraph:hover,.paragraph:focus-visible{border-color:var(--pink);background:#fff8fc}.paragraph .type{display:block;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--pink);margin-bottom:2px}.paragraph.scene-heading{font-weight:bold;text-transform:uppercase;margin-top:15px}.paragraph.character{padding-left:36%;text-transform:uppercase;margin-top:10px}.paragraph.dialogue{padding-left:25%;padding-right:22%}.paragraph.parenthetical{padding-left:31%;padding-right:20%}.paragraph.transition{text-align:right;text-transform:uppercase;margin-top:10px}.paragraph.blank{color:#876b7a;font-style:italic}.add-line{width:100%;border:1px dashed var(--line);background:#fff;color:var(--pink);min-height:44px;border-radius:8px;margin:7px 0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.add-line:hover{background:var(--blush)}
+.empty{border:1px dashed var(--pink);border-radius:14px;padding:25px;text-align:center;color:var(--pink);line-height:1.55}.notice{border-left:4px solid var(--pink);padding:10px 14px;background:var(--blush);color:var(--pink);font-size:13px;line-height:1.5}
+.modal{position:fixed;inset:0;background:#0008;z-index:20;display:none;align-items:flex-end;justify-content:center}.modal.open{display:flex}.sheet{width:100%;max-width:700px;max-height:calc(100dvh - var(--safe-top));overflow:auto;background:#fff;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + var(--safe-bottom));box-shadow:0 -10px 30px #0002}.sheet h2{color:var(--pink)}.sheet-actions{display:flex;gap:8px;flex-wrap:wrap}.sheet-actions .button{flex:1}.error-text{color:#a12b51;font-size:13px;min-height:18px}
+.print-view{display:none}.print-controls{display:flex;gap:9px;flex-wrap:wrap;padding:14px;background:var(--pink);color:var(--blush);align-items:center;justify-content:space-between}.print-controls p{margin:0;font-size:13px}.print-pages{max-width:816px;margin:20px auto;padding:60px 96px;background:#fff;box-shadow:0 4px 24px #0002;color:#000;font:12pt/1.08 "Courier New",Courier,monospace}.print-pages p{margin:0 0 12pt;white-space:pre-wrap;overflow-wrap:break-word}.print-pages .scene-heading{font-weight:bold;text-transform:uppercase;margin-top:12pt}.print-pages .character{margin:12pt 0 0 2in;text-transform:uppercase}.print-pages .dialogue{margin:0 1in 12pt 1in}.print-pages .parenthetical{margin:0 1in 0 1.5in}.print-pages .transition{text-align:right;text-transform:uppercase}.print-pages .title-page{text-align:center;min-height:8in;break-after:page}.print-pages .title-page p{margin:0 0 16pt}.print-pages .blank{height:12pt;margin:0}
+@media(max-width:500px){.paper{padding:14px 7px}.paragraph.character{padding-left:25%}.paragraph.dialogue{padding-left:17%;padding-right:10%}.paragraph.parenthetical{padding-left:23%;padding-right:10%}.doc-card{align-items:flex-start;flex-direction:column}.print-pages{padding:25px}}
+@media print{@page{size:letter;margin:1in 1in 1in 1.5in}html,body{background:#fff!important}.app,.modal,.print-controls{display:none!important}.print-view{display:block!important}.print-pages{box-shadow:none;max-width:none;margin:0;padding:0;font:12pt/1.08 "Courier New",Courier,monospace}.print-pages p{orphans:2;widows:2}.print-pages .scene-heading{break-after:avoid}.print-pages .character{break-after:avoid}.print-pages .title-page{min-height:8in}}
 </style>
 </head>
 <body>
-<div class="app-shell">
-
-  <!-- ===== HEADER ===== -->
-  <div class="app-header">
-    <div class="app-logo">
-      <span class="app-logo-text">the draft</span>
-      <svg class="app-logo-tm-svg" width="12" height="8" viewBox="0 0 12 8"><text x="0" y="7" font-family="'DM Sans', sans-serif" font-weight="700" font-size="7" fill="#fcd7f1" opacity="0.7">TM</text></svg>
+<div class="app" id="app">
+  <header class="top"><div class="brand">the draft</div><div class="status" id="saveStatus">Ready</div></header>
+  <main class="screen active" id="homeScreen"><div class="wrap">
+    <div class="eyebrow">A writing desk for Final Draft</div><h1>Work on a scene or the whole script.</h1>
+    <p class="intro">Open a Final Draft .fdx file, edit its screenplay elements, then save a new .fdx for Final Draft 13. You can also export plain text or prepare a text-based PDF.</p>
+    <div class="panel tint stack"><h2>Start writing</h2><div class="row"><button class="button" id="importButton">Import FDX</button><button class="button secondary" id="newButton">New script</button></div><p class="small" style="margin:0">Your working copy saves on this device. Export an FDX to move your changes back to Final Draft.</p></div>
+    <input id="fileInput" type="file" accept=".fdx,application/xml,text/xml" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" tabindex="-1">
+    <h2>Your scripts</h2><div id="docList"></div>
+  </div></main>
+  <main class="screen" id="scenesScreen"><div class="wrap"><div class="row between"><h1>Scenes</h1><button class="button secondary" id="addSceneButton">Add scene</button></div><p class="muted" id="sceneIntro"></p><div id="sceneList"></div></div></main>
+  <main class="screen" id="editorScreen"><div class="wrap">
+    <div class="toolbar"><div class="row between"><h1 id="editorTitle">Script</h1><button class="button ghost" id="undoButton">Undo</button></div>
+      <div class="row"><label class="field-label" for="viewSelect">View</label><select class="input" id="viewSelect" style="width:auto;min-width:200px"></select><button class="button secondary" id="newSceneEditorButton">Add scene</button></div>
     </div>
-    <span class="header-title" id="headerTitle">Home</span>
-  </div>
-
-  <!-- ===== HOME SCREEN ===== -->
-  <div class="screen active" id="screen-home">
-    <div class="home-content">
-      <div class="home-section-label">Your Scripts</div>
-      <div class="script-list" id="scriptList"></div>
-      <button class="import-btn" onclick="document.getElementById('fdx-file-input').click()">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M10 14V3M6 7l4-4 4 4M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2"/></svg>
-        Import .FDX File
-      </button>
-      <button class="new-script-btn" onclick="createNewScript()">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/></svg>
-        New Script
-      </button>
-      <input type="file" id="fdx-file-input" accept=".fdx" onchange="handleFDXImport(event)">
+    <div class="notice" id="editorNotice">Tap a paragraph to edit its text or element type. Use the plus buttons to add paragraphs.</div>
+    <div class="paper" id="paragraphList"></div>
+  </div></main>
+  <main class="screen" id="exportScreen"><div class="wrap">
+    <h1>Export</h1><p class="intro">FDX keeps screenplay element types so Final Draft can open and continue editing your script. TXT uses spaces to show layout. PDF uses your device's print dialog.</p>
+    <div id="exportEmpty" class="empty">Open or create a script first.</div>
+    <div id="exportForm" class="panel" hidden>
+      <div class="field"><label class="field-label" for="formatSelect">Format</label><select class="input" id="formatSelect"><option value="fdx">Final Draft (.fdx)</option><option value="txt">Text with layout (.txt)</option><option value="pdf">PDF / Print</option></select></div>
+      <div class="field"><label class="field-label" for="scopeSelect">Content</label><select class="input" id="scopeSelect"><option value="full">Full script</option><option value="scene">Single scene</option><option value="range">Scene range</option></select></div>
+      <div id="sceneExportField" class="field" hidden><label class="field-label" for="sceneExportSelect">Scene</label><select class="input" id="sceneExportSelect"></select></div>
+      <div id="rangeExportFields" class="row" hidden><div class="field" style="flex:1"><label class="field-label" for="rangeStart">From</label><select class="input" id="rangeStart"></select></div><div class="field" style="flex:1"><label class="field-label" for="rangeEnd">Through</label><select class="input" id="rangeEnd"></select></div></div>
+      <p class="muted" id="exportHelp"></p><button class="button wide" id="exportButton">Export</button><p class="error-text" id="exportError" role="alert"></p>
     </div>
-  </div>
-
-  <!-- ===== SCENE NAVIGATOR ===== -->
-  <div class="screen" id="screen-scenes">
-    <div class="scene-tabs">
-      <button class="scene-tab active" onclick="switchSceneTab('scenes', this)">Scenes</button>
-      <button class="scene-tab" onclick="switchSceneTab('pages', this)">Pages</button>
-      <button class="scene-tab" onclick="switchSceneTab('search', this)">Search</button>
-    </div>
-    <div id="sceneTabContent">
-      <div id="scenesListContainer" class="scene-list"></div>
-    </div>
-    <div id="searchPanel" style="display:none; flex-direction:column;">
-      <div class="scene-search-bar">
-        <input class="scene-search-input" type="text" placeholder="Search scenes..." oninput="searchScenes(this.value)">
-      </div>
-      <div class="scene-list" id="searchResults"></div>
-    </div>
-  </div>
-
-  <!-- ===== EDITOR ===== -->
-  <div class="screen" id="screen-editor">
-    <div class="editor-back-bar">
-      <button class="editor-back-btn" onclick="navigateTo('scenes')">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M12 4l-6 6 6 6"/></svg>
-        Back
-      </button>
-    </div>
-    <div class="editor-scene-header">
-      <div class="editor-scene-title" id="editorSceneTitle">No scene selected</div>
-    </div>
-    <div class="editor-content" id="editorContent">
-      <div class="no-scene-msg">
-        <p>Select a scene from the Scene Navigator to begin editing.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== EXPORT ===== -->
-  <div class="screen" id="screen-export">
-    <div class="export-content" id="exportContent">
-      <div id="exportNoScript" class="no-script-msg" style="display:none;">
-        <p>Import a script first to enable export options.</p>
-      </div>
-      <div id="exportOptions">
-        <div class="export-option selected" onclick="selectExport(this, 'full')">
-          <div class="export-icon" style="background: var(--pink-header);">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="7" y1="6" x2="13" y2="6"/><line x1="7" y1="9" x2="13" y2="9"/><line x1="7" y1="12" x2="10" y2="12"/></svg>
-          </div>
-          <div>
-            <div class="export-title">Full Script PDF</div>
-            <div class="export-desc" id="exportFullDesc">All scenes</div>
-          </div>
-        </div>
-        <div class="export-option" onclick="selectExport(this, 'scene')">
-          <div class="export-icon" style="background: var(--pink-header);">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><circle cx="10" cy="10" r="3"/></svg>
-          </div>
-          <div>
-            <div class="export-title">Single Scene</div>
-            <div class="export-desc" id="exportSceneDesc">Export current scene as PDF</div>
-          </div>
-        </div>
-        <div class="export-option" onclick="selectExport(this, 'range')">
-          <div class="export-icon" style="background: var(--pink-header);">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><rect x="4" y="2" width="12" height="16" rx="1.5"/><line x1="4" y1="7" x2="16" y2="7"/><line x1="4" y1="13" x2="16" y2="13"/></svg>
-          </div>
-          <div>
-            <div class="export-title">Scene Range</div>
-            <div class="export-desc">Select start and end scenes</div>
-          </div>
-        </div>
-        <div class="range-inputs" id="rangeInputs">
-          <div>
-            <div class="range-label">From</div>
-            <input class="range-input" type="number" id="rangeStart" min="1" value="1">
-          </div>
-          <div>
-            <div class="range-label">To</div>
-            <input class="range-input" type="number" id="rangeEnd" min="1" value="1">
-          </div>
-        </div>
-        <div class="export-option" onclick="selectExport(this, 'fdx')">
-          <div class="export-icon" style="background: var(--pink-header);">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8"><path d="M4 4l4-2 4 2 4-2v14l-4 2-4-2-4 2z"/></svg>
-          </div>
-          <div>
-            <div class="export-title">Save as .FDX</div>
-            <div class="export-desc">Re-export Final Draft file</div>
-          </div>
-        </div>
-        <button class="export-go-btn" id="exportGoBtn" onclick="handleExport()">EXPORT</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== SETTINGS ===== -->
-  <div class="screen" id="screen-settings">
-    <div class="settings-content">
-      <div class="settings-group-title">Storage</div>
-      <div class="settings-group">
-        <div class="settings-row">
-          <span class="settings-label">Dropbox Sync</span>
-          <div class="toggle" id="dropboxToggle" onclick="toggleDropbox()"></div>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Dropbox Status</span>
-          <span class="settings-value" id="dropboxStatus">Not connected</span>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Sync Folder</span>
-          <span class="settings-value">/Apps/the draft</span>
-        </div>
-      </div>
-
-      <div class="settings-group-title">Scripts</div>
-      <div class="settings-group">
-        <div class="settings-row">
-          <span class="settings-label">Scripts on device</span>
-          <span class="settings-value" id="scriptCount">0</span>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Clear all scripts</span>
-          <button class="settings-btn" onclick="confirmClearScripts()">Clear</button>
-        </div>
-      </div>
-
-      <div class="settings-group-title">Display</div>
-      <div class="settings-group">
-        <div class="settings-row">
-          <span class="settings-label">Editor Font Size</span>
-          <span class="settings-value" id="fontSizeValue">13px</span>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Scene Numbers</span>
-          <div class="toggle on" id="sceneNumToggle" onclick="toggleSceneNumbers()"></div>
-        </div>
-      </div>
-
-      <div class="settings-about">
-        <div class="settings-version">the draft v2.1</div>
-        <div class="settings-built">Built for April Korto Quioh</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== BOTTOM NAV ===== -->
-  <div class="bottom-nav">
-    <button class="nav-btn active" onclick="navigateTo('home')" id="nav-home">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-      <span class="nav-label">Home</span>
-    </button>
-    <button class="nav-btn" onclick="navigateTo('scenes')" id="nav-scenes">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
-      <span class="nav-label">Scenes</span>
-    </button>
-    <button class="nav-btn" onclick="navigateTo('editor')" id="nav-editor">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M15.5 3.5l5 5L7 22H2v-5L15.5 3.5z"/></svg>
-      <span class="nav-label">Editor</span>
-    </button>
-    <button class="nav-btn" onclick="navigateTo('export')" id="nav-export">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>
-      <span class="nav-label">Export</span>
-    </button>
-    <button class="nav-btn" onclick="navigateTo('settings')" id="nav-settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fcd7f1" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8l2.8-2.8M17 7l2.8-2.8"/></svg>
-      <span class="nav-label">Settings</span>
-    </button>
-  </div>
+    <p class="muted small">The Draft v3.1<br>Built for April Korto Quioh</p>
+  </div></main>
+  <nav class="nav" aria-label="Main"><button data-screen="home" class="active">Home</button><button data-screen="scenes">Scenes</button><button data-screen="editor">Script</button><button data-screen="export">Export</button></nav>
 </div>
-
-<!-- Edit Sheet (slides up from bottom) -->
-<div class="edit-overlay" id="editOverlay" onclick="cancelEdit(event)">
-  <div class="edit-sheet" onclick="event.stopPropagation()">
-    <div class="edit-sheet-handle"></div>
-    <div class="edit-sheet-header">
-      <button class="edit-sheet-cancel" onclick="closeEditSheet()">Cancel</button>
-      <span class="edit-sheet-type" id="editSheetType" onclick="openTypePickerForRetype()">Action <svg class="edit-sheet-type-arrow" width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l3 3 3-3"/></svg></span>
-      <button class="edit-sheet-save" onclick="saveEdit()">Save</button>
-    </div>
-    <textarea class="edit-sheet-textarea" id="editSheetTextarea"></textarea>
-  </div>
-</div>
-
-<!-- Type Picker (slides up from bottom) -->
-<div class="type-picker-overlay" id="typePickerOverlay" onclick="closeTypePicker()">
-  <div class="type-picker-sheet" onclick="event.stopPropagation()">
-    <div class="type-picker-handle"></div>
-    <div class="type-picker-title" id="typePickerTitle">Choose Element Type</div>
-    <div class="type-picker-list" id="typePickerList"></div>
-    <button class="type-picker-cancel" onclick="closeTypePicker()">Cancel</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
+<div class="modal" id="editModal"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+  <h2 id="editTitle">Edit paragraph</h2>
+  <div class="field"><label class="field-label" for="elementType">Element type</label><select class="input" id="elementType"></select></div>
+  <div class="field"><label class="field-label" for="elementText">Text</label><textarea class="input" id="elementText" spellcheck="true"></textarea></div>
+  <p class="error-text" id="editError" role="alert"></p>
+  <div class="sheet-actions"><button class="button ghost" id="cancelEdit">Cancel</button><button class="button danger" id="deleteParagraph">Delete</button><button class="button" id="saveEdit">Save</button></div>
+</div></div>
+<div class="modal" id="nameModal"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+  <h2 id="nameTitle">New script</h2>
+  <div class="field"><label class="field-label" for="scriptName">Script title</label><input class="input" id="scriptName" autocomplete="off" maxlength="150"></div>
+  <p class="error-text" id="nameError" role="alert"></p>
+  <div class="sheet-actions"><button class="button ghost" id="cancelName">Cancel</button><button class="button" id="saveName">Save</button></div>
+</div></div>
+<div class="print-view" id="printView"><div class="print-controls"><p>Choose <strong>Save as PDF</strong> in the print dialog.</p><div class="row"><button class="button secondary" id="printBack">Back</button><button class="button secondary" id="printNow">Print / Save PDF</button></div></div><div class="print-pages" id="printPages"></div></div>
 <script>
-// ========== APP STATE ==========
-const APP_VERSION = '2.1';
-let appState = {
-  scripts: [],
-  activeScriptId: null,
-  activeSceneIndex: null,
-  selectedExport: 'full',
-  settings: {
-    dropboxEnabled: false,
-    showSceneNumbers: true,
-    editorFontSize: 13
-  }
-};
-
-// Title page element types to filter out
-const TITLE_PAGE_TYPES = new Set([
-  '', 'Script Title', 'Written by', 'Name of First Writer',
-  'Based on', 'Address', 'Phone Number', 'Revision',
-  'Draft Date', 'Copyright', 'Contact', 'Author',
-  'Source', 'Notes'
-]);
-
-// ========== INIT ==========
-function init() {
-  loadState();
-  renderScriptList();
-  updateSceneNavigator();
-  updateExportScreen();
-  updateSettingsScreen();
+"use strict";
+const DB_NAME = "the-draft-documents-v3";
+const STORE = "documents";
+const OLD_KEY = "the_draft_state";
+const TYPES = ["Scene Heading","Action","Character","Dialogue","Parenthetical","Transition","Shot","General","Lyrics","Section","Synopsis","Note"];
+let db = null;
+let docs = [];
+let activeId = null;
+let xmlDoc = null;
+let view = "full";
+let selectedScene = 0;
+let screen = "home";
+let edit = null;
+let undo = [];
+let saveQueue = Promise.resolve();
+let printActive = false;
+let naming = null;
+const $ = id => document.getElementById(id);
+const direct = (parent, tag) => parent ? Array.from(parent.children).filter(el => el.localName === tag) : [];
+const child = (parent, tag) => direct(parent, tag)[0] || null;
+const uid = () => crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+const active = () => docs.find(d => d.id === activeId) || null;
+const content = () => child(xmlDoc && xmlDoc.documentElement, "Content");
+const paragraphs = () => direct(content(), "Paragraph");
+const titleContent = () => child(child(xmlDoc && xmlDoc.documentElement, "TitlePage"), "Content");
+const titleParagraphs = () => direct(titleContent(), "Paragraph");
+const textOf = p => direct(p, "Text").map(t => t.textContent || "").join("");
+const typeOf = p => p.getAttribute("Type") || "General";
+function setStatus(message, error) { $("saveStatus").textContent = message; $("saveStatus").classList.toggle("error", !!error); }
+function errorMessage(err) { return err && err.message ? err.message : String(err); }
+function parseFDX(raw) {
+  const parsed = new DOMParser().parseFromString(raw, "application/xml");
+  if (parsed.getElementsByTagName("parsererror").length) throw new Error("This file contains invalid XML.");
+  const root = parsed.documentElement;
+  if (!root || root.localName !== "FinalDraft" || root.getAttribute("DocumentType") !== "Script" || !child(root, "Content")) throw new Error("This is not a Final Draft script FDX file.");
+  return parsed;
 }
-
-function loadState() {
-  try {
-    const saved = localStorage.getItem('the_draft_state');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      appState = { ...appState, ...parsed };
-      // Re-parse XML DOMs and relink paragraph references for each script
-      appState.scripts.forEach(script => {
-        if (script.rawXml) {
-          relinkXmlRefs(script);
-        }
-      });
+function serialize(doc) {
+  const body = new XMLSerializer().serializeToString(doc).replace(/^\s*<\?xml[^>]*\?>\s*/i, "");
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' + body;
+}
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = () => request.result.createObjectStore(STORE, {keyPath:"id"});
+    request.onerror = () => reject(request.error || new Error("Storage unavailable"));
+    request.onsuccess = () => resolve(request.result);
+  });
+}
+function getAll() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readonly");
+    const request = tx.objectStore(STORE).getAll();
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+}
+function putDoc(doc) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readwrite");
+    tx.objectStore(STORE).put(doc);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error || new Error("Storage failed"));
+    tx.onabort = () => reject(tx.error || new Error("Storage failed"));
+  });
+}
+function removeDoc(id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readwrite");
+    tx.objectStore(STORE).delete(id);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error || new Error("Storage failed"));
+  });
+}
+async function migrateOld() {
+  if (localStorage.getItem("the_draft_v3_migrated")) return;
+  let old;
+  try { old = JSON.parse(localStorage.getItem(OLD_KEY) || "null"); } catch (_) { old = null; }
+  if (old && Array.isArray(old.scripts)) {
+    for (const script of old.scripts) {
+      if (!script.rawXml) continue;
+      try {
+        parseFDX(script.rawXml);
+        const doc = {id:uid(), name:script.fileName || script.title || "Imported script.fdx", xml:script.rawXml, updated:Date.now()};
+        await putDoc(doc);
+        docs.push(doc);
+      } catch (err) { console.warn("Skipped an invalid legacy script", err); }
     }
-  } catch(e) { console.error('Failed to load state:', e); }
+  }
+  localStorage.setItem("the_draft_v3_migrated", "1");
 }
-
-function saveState() {
+async function init() {
+  bindEvents();
   try {
-    // Strip non-serializable DOM refs (xmlDoc, xmlParagraph) before saving
-    const cleanJson = JSON.stringify(appState, (key, val) => {
-      if (key === 'xmlDoc' || key === 'xmlParagraph') return undefined;
-      return val;
-    });
-    localStorage.setItem('the_draft_state', cleanJson);
-  } catch(e) { console.error('Failed to save state:', e); }
+    db = await openDB();
+    docs = await getAll();
+    await migrateOld();
+    docs.sort((a,b) => b.updated - a.updated);
+    const last = localStorage.getItem("the_draft_active_id");
+    if (last && docs.some(d => d.id === last)) await openDocument(last, false);
+    else if (docs.length) await openDocument(docs[0].id, false);
+    renderAll();
+    setStatus("Saved on this device");
+  } catch (err) {
+    setStatus("Storage unavailable", true);
+    $("docList").innerHTML = '<div class="empty">This browser could not open local storage. Please enable site storage and reload before writing.</div>';
+    $("importButton").disabled = true;
+    $("newButton").disabled = true;
+    console.error(err);
+  }
 }
-
-function relinkXmlRefs(script) {
-  try {
-    const parser = new DOMParser();
-    script.xmlDoc = parser.parseFromString(script.rawXml, 'text/xml');
-    const contentEl = script.xmlDoc.querySelector('Content');
-    const paragraphs = contentEl ? contentEl.querySelectorAll('Paragraph') : script.xmlDoc.querySelectorAll('Paragraph');
-    script.scenes.forEach(scene => {
-      scene.elements.forEach(el => {
-        if (el.pIdx !== undefined && paragraphs[el.pIdx]) {
-          el.xmlParagraph = paragraphs[el.pIdx];
-        }
-      });
-    });
-  } catch(e) { console.error('Failed to relink XML refs:', e); }
+function bindEvents() {
+  document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => showScreen(b.dataset.screen)));
+  $("importButton").onclick = () => $("fileInput").click();
+  $("fileInput").onchange = importFile;
+  $("newButton").onclick = () => openNameModal("new");
+  $("addSceneButton").onclick = addScene;
+  $("newSceneEditorButton").onclick = addScene;
+  $("viewSelect").onchange = () => { const value=$("viewSelect").value; view=value.startsWith("scene-")?"scene":value; if(view==="scene")selectedScene=Number(value.slice(6)); renderEditor(); };
+  $("undoButton").onclick = undoChange;
+  $("docList").onclick = onDocListClick;
+  $("sceneList").onclick = onSceneListClick;
+  $("paragraphList").onclick = onParagraphClick;
+  $("cancelEdit").onclick = closeEdit;
+  $("saveEdit").onclick = saveEdit;
+  $("deleteParagraph").onclick = deleteParagraph;
+  $("elementText").oninput = syncEditSave;
+  $("cancelName").onclick = closeNameModal;
+  $("saveName").onclick = saveNameModal;
+  $("scriptName").oninput = () => { $("saveName").disabled = !$("scriptName").value.trim(); $("nameError").textContent = ""; };
+  $("nameModal").onclick = e => { if(e.target===$("nameModal"))closeNameModal(); };
+  $("editModal").onclick = e => { if (e.target === $("editModal")) closeEdit(); };
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && edit) closeEdit();
+    if (e.key === "Escape" && naming) closeNameModal();
+    if (e.key === "Enter" && naming && document.activeElement===$("scriptName")) saveNameModal();
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z" && !edit && !printActive) { e.preventDefault(); undoChange(); }
+  });
+  $("scopeSelect").onchange = updateExportFields;
+  $("formatSelect").onchange = updateExportFields;
+  $("rangeStart").onchange = updateExportFields;
+  $("rangeEnd").onchange = updateExportFields;
+  $("exportButton").onclick = exportSelected;
+  $("printBack").onclick = closePrint;
+  $("printNow").onclick = () => window.print();
 }
-
-// ========== NAVIGATION ==========
-function navigateTo(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + screen).classList.add('active');
-  document.getElementById('nav-' + screen).classList.add('active');
-  const titles = { home: 'Home', scenes: 'Scene Navigator', editor: 'Editor', export: 'Export', settings: 'Settings' };
-  document.getElementById('headerTitle').textContent = titles[screen] || '';
+function showScreen(next) {
+  if (printActive) closePrint();
+  screen = next;
+  document.querySelectorAll(".screen").forEach(el => el.classList.toggle("active", el.id === next + "Screen"));
+  document.querySelectorAll(".nav button").forEach(el => el.classList.toggle("active", el.dataset.screen === next));
+  if (next === "scenes") renderScenes();
+  if (next === "editor") renderEditor();
+  if (next === "export") renderExport();
 }
-
-// ========== SCENE HEADING FORMATTER ==========
-function formatSceneHeading(raw) {
-  let h = raw.toUpperCase().trim();
-  h = h.replace(/\s*[\u2013\u2014]+\s*/g, ' - ');
-  h = h.replace(/\s*-{2,}\s*/g, ' - ');
-  h = h.replace(/\s*-\s*/g, ' - ');
-  h = h.replace(/^(INT|EXT|I\/E)\s/i, '$1. ');
-  h = h.replace(/^(INT|EXT|I\/E)([^.])/i, '$1.$2');
-  return h;
+async function openDocument(id, navigate) {
+  const doc = docs.find(d => d.id === id);
+  if (!doc) return;
+  try { xmlDoc = parseFDX(doc.xml); } catch (err) { alert("Could not open " + doc.name + ": " + errorMessage(err)); return; }
+  activeId = id; selectedScene = 0; view = sceneSections().length ? "scene" : "full"; undo = [];
+  localStorage.setItem("the_draft_active_id", id);
+  renderAll();
+  if (navigate) showScreen("editor");
 }
-
-// ========== FDX IMPORT ==========
-function handleFDXImport(event) {
-  const file = event.target.files[0];
+function renderAll() { renderDocs(); renderScenes(); renderEditor(); renderExport(); }
+function renderDocs() {
+  const list = $("docList"); list.replaceChildren();
+  if (!docs.length) { list.innerHTML = '<div class="empty">No scripts yet. Import an FDX file or create a new script.</div>'; return; }
+  for (const doc of docs) {
+    const card = document.createElement("div"); card.className = "doc-card";
+    const info = document.createElement("div");
+    const name = document.createElement("strong"); name.textContent = doc.name.replace(/\.fdx$/i,"");
+    const meta = document.createElement("p"); meta.className = "muted"; meta.textContent = (doc.id === activeId ? "Open · " : "") + "Edited " + new Date(doc.updated).toLocaleString();
+    info.append(name,meta);
+    const actions = document.createElement("div"); actions.className = "card-actions";
+    for (const [action,label,cls] of [["open","Open","button"],["rename","Rename","button ghost"],["delete","Delete","button danger"]]) {
+      const b = document.createElement("button"); b.className = cls; b.textContent = label; b.dataset.action = action; b.dataset.id = doc.id; actions.append(b);
+    }
+    card.append(info,actions); list.append(card);
+  }
+}
+async function onDocListClick(e) {
+  const b = e.target.closest("button[data-action]"); if (!b) return;
+  const doc = docs.find(d => d.id === b.dataset.id); if (!doc) return;
+  if (b.dataset.action === "open") return openDocument(doc.id, true);
+  if (b.dataset.action === "rename") {
+    openNameModal("rename",doc.id); return;
+  }
+  if (b.dataset.action === "delete") {
+    if (!confirm('Delete the working copy of "' + doc.name + '" from this device?')) return;
+    await removeDoc(doc.id); docs = docs.filter(d => d.id !== doc.id);
+    if (activeId === doc.id) {
+      activeId = null; xmlDoc = null; undo = []; localStorage.removeItem("the_draft_active_id");
+      if (docs.length) await openDocument(docs[0].id, false);
+    }
+    renderAll();
+  }
+}
+async function importFile(e) {
+  const file = e.target.files && e.target.files[0]; e.target.value = "";
   if (!file) return;
-  if (!file.name.toLowerCase().endsWith('.fdx')) {
-    showToast('Please select a .fdx file');
+  if (!/\.fdx$/i.test(file.name)) return alert("Choose an .fdx file.");
+  try {
+    const raw = await file.text();
+    parseFDX(raw);
+    const doc = {id:uid(),name:file.name,xml:raw,updated:Date.now()};
+    await putDoc(doc); docs.unshift(doc); await openDocument(doc.id,true); setStatus("Imported and saved");
+  } catch (err) { alert("Import failed: " + errorMessage(err)); }
+}
+function openNameModal(mode,id) {
+  naming={mode,id};
+  $("nameTitle").textContent=mode==="new"?"New script":"Rename script";
+  $("scriptName").value=mode==="rename"?(docs.find(d=>d.id===id)?.name||"").replace(/\.fdx$/i,""):"";
+  $("nameError").textContent="";
+  $("saveName").disabled=!$("scriptName").value.trim();
+  $("nameModal").classList.add("open");
+  setTimeout(()=>$("scriptName").focus(),30);
+}
+function closeNameModal() { naming=null; $("nameModal").classList.remove("open"); $("scriptName").blur(); }
+async function saveNameModal() {
+  if(!naming)return;
+  const clean=$("scriptName").value.trim().replace(/[\\/:*?"<>|]/g,"-");
+  if(!clean){$("nameError").textContent="Enter a script title.";return;}
+  if(naming.mode==="rename") {
+    const doc=docs.find(d=>d.id===naming.id); if(!doc)return;
+    doc.name=clean+".fdx";doc.updated=Date.now();
+    try{await putDoc(doc);closeNameModal();renderAll();}catch(err){$("nameError").textContent=errorMessage(err);}
     return;
   }
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const xmlText = e.target.result;
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(xmlText, 'text/xml');
-      const script = parseFDX(xml, file.name, xmlText);
-      if (script.scenes.length === 0) {
-        showToast('No scenes found in this FDX file');
-        return;
-      }
-      const existingIdx = appState.scripts.findIndex(s => s.fileName === file.name);
-      if (existingIdx >= 0) {
-        appState.scripts[existingIdx] = script;
-      } else {
-        appState.scripts.push(script);
-      }
-      appState.activeScriptId = script.id;
-      saveState();
-      renderScriptList();
-      updateSceneNavigator();
-      updateExportScreen();
-      updateSettingsScreen();
-      showToast(script.title + ' imported \u2014 ' + script.scenes.length + ' scenes');
-      navigateTo('scenes');
-    } catch(err) {
-      console.error('FDX parse error:', err);
-      showToast('Error parsing FDX file');
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+  await newDocument(clean);
 }
-
-function parseFDX(xml, fileName, rawXml) {
-  // Only get paragraphs inside <Content>, not <TitlePage>
-  const contentEl = xml.querySelector('Content');
-  const paragraphs = contentEl ? contentEl.querySelectorAll('Paragraph') : xml.querySelectorAll('Paragraph');
-  const scenes = [];
-  let currentScene = null;
-  let pageCount = 0;
-  let paragraphIndex = 0;
-
-  paragraphs.forEach(p => {
-    const pIdx = paragraphIndex++;
-    const type = p.getAttribute('Type') || '';
-    const textEls = p.querySelectorAll('Text');
-    let text = '';
-    textEls.forEach(t => { text += t.textContent || ''; });
-    const trimmed = text.trim();
-
-    // Skip title page elements and empty/dot-only lines
-    if (TITLE_PAGE_TYPES.has(type)) return;
-    if (!trimmed || /^\.+$/.test(trimmed)) return;
-
-    if (type === 'Scene Heading' && trimmed) {
-      if (currentScene) scenes.push(currentScene);
-      currentScene = {
-        heading: formatSceneHeading(trimmed),
-        elements: [],
-        startPage: pageCount + 1
-      };
-      pageCount++;
+async function newDocument(clean) {
+  const root = '<?xml version="1.0" encoding="UTF-8"?><FinalDraft DocumentType="Script" Template="No" Version="6"><Content></Content></FinalDraft>';
+  const doc = {id:uid(),name:clean + ".fdx",xml:root,updated:Date.now()};
+  try { await putDoc(doc); closeNameModal(); docs.unshift(doc); await openDocument(doc.id,true); } catch (err) { $("nameError").textContent="Could not save: "+errorMessage(err); }
+}
+function sceneSections() {
+  const ps = paragraphs(); const result = []; let current = null;
+  for (let i=0;i<ps.length;i++) {
+    if (typeOf(ps[i]) === "Scene Heading" && textOf(ps[i]).trim()) {
+      current = {start:i,end:i,label:textOf(ps[i]).trim(),opening:false};
+      result.push(current);
+    } else {
+      if (!current) { current={start:0,end:i,label:"Opening material",opening:true}; result.push(current); }
+      current.end=i;
     }
-    if (currentScene && trimmed) {
-      currentScene.elements.push({ type: type, text: trimmed, pIdx: pIdx, xmlParagraph: p });
-    }
+  }
+  return result;
+}
+function renderScenes() {
+  const list = $("sceneList"); list.replaceChildren();
+  const doc = active(); $("sceneIntro").textContent = doc ? doc.name : "Open or create a script first.";
+  $("addSceneButton").disabled = !doc;
+  if (!doc) { list.innerHTML = '<div class="empty">No script is open. Start on Home.</div>'; return; }
+  const sections = sceneSections();
+  if (!sections.length) { list.innerHTML = '<div class="empty">This script has no paragraphs yet. Add a scene to begin.</div>'; return; }
+  sections.forEach((sec,i) => {
+    const b = document.createElement("button"); b.className = "scene-card"; b.dataset.scene = i;
+    const strong = document.createElement("strong"); strong.textContent = sec.opening ? sec.label : "Scene " + sections.slice(0,i+1).filter(s => !s.opening).length + " · " + sec.label;
+    const span = document.createElement("span"); span.textContent = (sec.end-sec.start+1) + " paragraph" + (sec.end===sec.start?"":"s");
+    b.append(strong,span); list.append(b);
   });
-  if (currentScene) scenes.push(currentScene);
-
-  // Estimate pages per scene
-  const totalEstPages = Math.max(pageCount, Math.ceil(paragraphs.length / 55));
-  const pagesPerScene = Math.max(1, Math.round(totalEstPages / Math.max(1, scenes.length)));
-  scenes.forEach((s, i) => {
-    s.startPage = (i * pagesPerScene) + 1;
-    s.endPage = Math.min(((i + 1) * pagesPerScene), totalEstPages);
-  });
-
-  const titlePage = xml.querySelector('TitlePage');
-  let title = fileName.replace('.fdx', '').replace(/_/g, ' ');
-  if (titlePage) {
-    const tpParagraphs = titlePage.querySelectorAll('Paragraph');
-    for (const tp of tpParagraphs) {
-      const tpType = tp.getAttribute('Type') || '';
-      if (tpType === 'Script Title') {
-        const textEl = tp.querySelector('Text');
-        if (textEl && textEl.textContent.trim()) {
-          title = textEl.textContent.trim();
-          break;
-        }
-      }
-    }
-  }
-
-  return {
-    id: 'script_' + Date.now(),
-    title: title.toUpperCase(),
-    fileName: fileName,
-    scenes: scenes,
-    totalPages: totalEstPages,
-    importDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    rawXml: rawXml,
-    xmlDoc: xml
-  };
 }
-
-// ========== RENDER ==========
-function renderScriptList() {
-  const container = document.getElementById('scriptList');
-  if (appState.scripts.length === 0) {
-    container.innerHTML = '<div class="empty-state"><p>No scripts yet. Import a .fdx file to get started.</p></div>';
-    return;
-  }
-  container.innerHTML = appState.scripts.map(s => `
-    <div class="script-card" onclick="selectScript('${s.id}')">
-      <div class="script-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fcd7f1" stroke-width="1.8">
-          <rect x="4" y="2" width="12" height="16" rx="1.5"/>
-          <line x1="7" y1="6" x2="13" y2="6"/>
-          <line x1="7" y1="9" x2="13" y2="9"/>
-          <line x1="7" y1="12" x2="10" y2="12"/>
-        </svg>
-      </div>
-      <div style="flex:1;min-width:0;">
-        <div class="script-name">${s.title}</div>
-        <div class="script-meta">${s.scenes.length} scenes &middot; ~${s.totalPages} pages &middot; ${s.importDate}</div>
-      </div>
-      <button class="script-delete-btn" onclick="event.stopPropagation(); deleteScript('${s.id}')" aria-label="Delete script">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h12M8 6V4h4v2M6 6v10a1 1 0 001 1h6a1 1 0 001-1V6"/><line x1="9" y1="9" x2="9" y2="14"/><line x1="11" y1="9" x2="11" y2="14"/></svg>
-      </button>
-    </div>
-  `).join('');
+function onSceneListClick(e) {
+  const b = e.target.closest("button[data-scene]"); if (!b) return;
+  selectedScene = Number(b.dataset.scene); view = "scene"; showScreen("editor");
 }
-
-function deleteScript(id) {
-  const script = appState.scripts.find(s => s.id === id);
-  if (!script) return;
-  if (!confirm('Delete "' + script.title + '"? This cannot be undone.')) return;
-  appState.scripts = appState.scripts.filter(s => s.id !== id);
-  if (appState.activeScriptId === id) {
-    appState.activeScriptId = appState.scripts.length > 0 ? appState.scripts[0].id : null;
-    appState.activeSceneIndex = null;
-  }
-  saveState();
-  renderScriptList();
-  updateSceneNavigator();
-  updateExportScreen();
-  updateSettingsScreen();
-  showToast('Script deleted');
-}
-
-function selectScript(id) {
-  appState.activeScriptId = id;
-  saveState();
-  updateSceneNavigator();
-  updateExportScreen();
-  navigateTo('scenes');
-}
-
-function updateSceneNavigator() {
-  const container = document.getElementById('scenesListContainer');
-  const script = getActiveScript();
-  if (!script) {
-    container.innerHTML = '<div class="no-script-msg"><p>Import a script from the Home screen to browse scenes.</p></div>';
-    return;
-  }
-  container.innerHTML = script.scenes.map((s, i) => `
-    <div class="scene-item" onclick="openScene(${i})">
-      <div class="scene-num">${i + 1}</div>
-      <div class="scene-info">
-        <div class="scene-heading-text">${escHtml(s.heading)}</div>
-        <div class="scene-pages">pp. ${s.startPage}-${s.endPage}</div>
-      </div>
-      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#f6d0f7" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
-    </div>
-  `).join('') + `
-    <button class="add-line-btn" style="opacity:0.5;padding:14px 0;" onclick="addNewScene()" aria-label="Add new scene">
-      <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="var(--mauve-rose)" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><line x1="10" y1="6" x2="10" y2="14"/><line x1="6" y1="10" x2="14" y2="10"/></svg>
-      <span style="margin-left:8px;font-size:12px;font-weight:700;color:var(--mauve-rose);letter-spacing:1px;">ADD SCENE</span>
-    </button>`;
-}
-
-function openScene(index) {
-  appState.activeSceneIndex = index;
-  saveState();
-  renderEditor();
-  navigateTo('editor');
-}
-
 function renderEditor() {
-  const script = getActiveScript();
-  const titleEl = document.getElementById('editorSceneTitle');
-  const contentEl = document.getElementById('editorContent');
-
-  if (!script || appState.activeSceneIndex === null || appState.activeSceneIndex >= script.scenes.length) {
-    titleEl.textContent = 'No scene selected';
-    contentEl.innerHTML = '<div class="no-scene-msg"><p>Select a scene from the Scene Navigator.</p></div>';
+  const doc = active(); const list = $("paragraphList"); list.replaceChildren();
+  $("editorTitle").textContent = doc ? doc.name.replace(/\.fdx$/i,"") : "Script";
+  $("newSceneEditorButton").disabled = !doc; $("undoButton").disabled = !undo.length;
+  const select = $("viewSelect"); select.replaceChildren();
+  if (!doc) { list.innerHTML = '<div class="empty">Open a script on Home to edit it.</div>'; return; }
+  const sections = sceneSections();
+  const options = [["full","Full script"]];
+  if (titleParagraphs().length) options.push(["title","Title page"]);
+  sections.forEach((sec,i) => options.push(["scene-"+i,sec.label]));
+  for (const [value,label] of options) { const op = new Option(label,value); select.add(op); }
+  const value = view === "scene" ? "scene-"+Math.min(selectedScene,sections.length-1) : view;
+  select.value = options.some(o => o[0]===value) ? value : "full";
+  view = select.value.startsWith("scene-") ? "scene" : select.value;
+  if (view === "scene") selectedScene = Number(select.value.split("-")[1]);
+  $("editorNotice").textContent = view === "title" ? "Title page text is editable here. The original FDX title page layout remains in the exported file." : "Tap a paragraph to edit its text or element type. Use the plus buttons to add paragraphs.";
+  const ps = view === "title" ? titleParagraphs() : paragraphs();
+  let start=0,end=ps.length-1,area=view === "title"?"title":"content";
+  if (view === "scene" && sections[selectedScene]) { start=sections[selectedScene].start; end=sections[selectedScene].end; }
+  if (view === "full" && titleParagraphs().length) {
+    const note = document.createElement("p"); note.className="muted"; note.textContent="Title page available in the View menu."; list.append(note);
+  }
+  if (end < start) { const n = document.createElement("div"); n.className="empty"; n.textContent="No paragraphs here yet. Add one below."; list.append(n); }
+  for(let i=start;i<=end;i++) {
+    const p=ps[i]; if (!p) continue;
+    const b=document.createElement("button"); b.className="paragraph "+typeOf(p).toLowerCase().replace(/[^a-z]+/g,"-")+(textOf(p).trim()?"":" blank");
+    b.dataset.area=area; b.dataset.index=i; b.setAttribute("aria-label","Edit "+typeOf(p)+" paragraph");
+    const t=document.createElement("span"); t.className="type"; t.textContent=typeOf(p);
+    const x=document.createElement("span"); x.textContent=textOf(p) || "Empty paragraph";
+    b.append(t,x); list.append(b);
+    const plus=document.createElement("button"); plus.className="add-line"; plus.dataset.addAfter=i; plus.dataset.area=area; plus.textContent="+ Add paragraph here"; list.append(plus);
+  }
+  if (end < start || !ps.length) {
+    const plus=document.createElement("button"); plus.className="add-line"; plus.dataset.addAfter=-1; plus.dataset.area=area; plus.textContent="+ Add paragraph"; list.append(plus);
+  }
+}
+function onParagraphClick(e) {
+  const add=e.target.closest("button[data-add-after]");
+  if (add) return openEdit({area:add.dataset.area,index:Number(add.dataset.addAfter),isNew:true});
+  const b=e.target.closest("button[data-index]");
+  if (b) openEdit({area:b.dataset.area,index:Number(b.dataset.index),isNew:false});
+}
+function openEdit(next) {
+  if (!active()) return;
+  edit=next;
+  const ps=next.area==="title"?titleParagraphs():paragraphs();
+  const current=next.isNew?null:ps[next.index];
+  const previous=next.isNew?ps[next.index]:null;
+  $("editTitle").textContent=next.isNew?"Add paragraph":"Edit paragraph";
+  const type= current ? typeOf(current) : previous ? (typeOf(previous)==="Character"||typeOf(previous)==="Parenthetical"?"Dialogue":"Action") : "Action";
+  const select=$("elementType"); select.replaceChildren();
+  const typeList=TYPES.includes(type)?TYPES:[type,...TYPES];
+  for(const t of typeList) select.add(new Option(t,t));
+  select.value=type;
+  $("elementText").value=current?textOf(current):"";
+  $("elementText").placeholder="";
+  $("editError").textContent="";
+  $("deleteParagraph").hidden=next.isNew;
+  syncEditSave();
+  $("editModal").classList.add("open");
+  setTimeout(()=>$("elementText").focus(),30);
+}
+function closeEdit() { edit=null; $("editModal").classList.remove("open"); $("elementText").blur(); $("editError").textContent=""; }
+function syncEditSave() { $("saveEdit").disabled=!$("elementText").value.trim(); if($("elementText").value.trim())$("editError").textContent=""; }
+function setText(p,value) {
+  const nodes=direct(p,"Text");
+  const first=nodes[0]||xmlDoc.createElementNS(p.namespaceURI,"Text");
+  if (!nodes.length) p.append(first);
+  if (nodes.length>1) {
+    for(const attr of Array.from(first.attributes)) first.removeAttribute(attr.name);
+    nodes.slice(1).forEach(n=>n.remove());
+  }
+  first.textContent=value;
+}
+function snapshot() { if (xmlDoc) { undo.push(serialize(xmlDoc)); if (undo.length>30) undo.shift(); } }
+function afterChange() {
+  const doc=active(); if (!doc) return;
+  const candidate=serialize(xmlDoc);
+  try { parseFDX(candidate); }
+  catch(err) {
+    const previous=undo.pop();
+    if(previous)xmlDoc=parseFDX(previous);
+    setStatus("Change not saved",true);
+    renderAll();
+    alert("The edit could not be saved as valid FDX: "+errorMessage(err));
     return;
   }
-
-  const scene = script.scenes[appState.activeSceneIndex];
-  titleEl.textContent = scene.heading;
-
-  let html = '';
-  const sceneIdx = appState.activeSceneIndex;
-
-  // Add-line button helper (+ icon via SVG, no emoji)
-  const addBtn = (afterIdx) => `<button class="add-line-btn" onclick="openTypePickerForAdd(${sceneIdx}, ${afterIdx})" aria-label="Add element"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--mauve-rose)" stroke-width="1.5" opacity="0.6"><circle cx="10" cy="10" r="8"/><line x1="10" y1="6" x2="10" y2="14"/><line x1="6" y1="10" x2="14" y2="10"/></svg></button>`;
-
-  scene.elements.forEach((el, elIndex) => {
-    const txt = el.text.trim();
-    if (!txt || /^\.+$/.test(txt)) return;
-    // Tap handler opens edit sheet for this element
-    const tap = `onclick="openEditSheet(${sceneIdx}, ${elIndex})"`;
-    switch(el.type) {
-      case 'Scene Heading':
-        html += `<div class="fdx-scene-heading fdx-editable" ${tap}>${escHtml(formatSceneHeading(txt))}</div>`;
-        break;
-      case 'Action':
-        html += `<div class="fdx-action fdx-editable" ${tap}>${escHtml(txt)}</div>`;
-        break;
-      case 'Character':
-        html += `<div class="fdx-character fdx-editable" ${tap}>${escHtml(txt)}</div>`;
-        break;
-      case 'Dialogue':
-        html += `<div class="fdx-dialogue fdx-editable" ${tap}>${escHtml(txt)}</div>`;
-        break;
-      case 'Parenthetical':
-        html += `<div class="fdx-parenthetical fdx-editable" ${tap}>${escHtml(txt)}</div>`;
-        break;
-      case 'Transition':
-        html += `<div class="fdx-transition fdx-editable" ${tap}>${escHtml(txt)}</div>`;
-        break;
-      default:
-        if (!TITLE_PAGE_TYPES.has(el.type)) {
-          html += `<div class="fdx-general fdx-editable" ${tap}>${escHtml(txt)}</div>`;
-        }
-    }
-    // Add-line button after each element
-    html += addBtn(elIndex);
-  });
-
-  // If scene is empty (new script), show a prominent add button
-  if (scene.elements.length === 0) {
-    html += `<div class="no-scene-msg"><p>Empty scene. Tap + to add your first element.</p></div>`;
-    html += addBtn(-1);
-  }
-
-  contentEl.innerHTML = html;
+  doc.xml=candidate; doc.updated=Date.now();
+  setStatus("Saving…");
+  const version={...doc};
+  saveQueue=saveQueue.catch(()=>{}).then(()=>putDoc(version)).then(()=>setStatus("Saved on this device")).catch(err=>{setStatus("Save failed — export now",true); alert("Changes are in this open tab, but local saving failed: "+errorMessage(err)+". Export an FDX now.");});
+  renderAll();
 }
-
-// ========== EDIT SHEET (tap-to-edit) ==========
-let editingSceneIdx = null;
-let editingElIdx = null;
-let editingIsNew = false; // Track if we're editing a newly-added element
-
-function openEditSheet(sceneIdx, elIdx) {
-  const script = getActiveScript();
-  if (!script) return;
-  const el = script.scenes[sceneIdx].elements[elIdx];
-  if (!el) return;
-
-  editingSceneIdx = sceneIdx;
-  editingElIdx = elIdx;
-  editingIsNew = false;
-
-  const typeLabel = document.getElementById('editSheetType');
-  typeLabel.innerHTML = escHtml(el.type) + ' <svg class="edit-sheet-type-arrow" width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l3 3 3-3"/></svg>';
-  const ta = document.getElementById('editSheetTextarea');
-  ta.value = el.type === 'Scene Heading' ? formatSceneHeading(el.text) : el.text;
-  document.getElementById('editOverlay').classList.add('active');
-
-  // Focus the textarea after the sheet animates in
-  setTimeout(() => ta.focus(), 100);
-}
-
 function saveEdit() {
-  const script = getActiveScript();
-  if (!script || editingSceneIdx === null || editingElIdx === null) return;
-
-  const el = script.scenes[editingSceneIdx].elements[editingElIdx];
-  if (!el) return;
-
-  const newText = document.getElementById('editSheetTextarea').value.trim();
-  if (!newText) {
-    showToast('Cannot save empty text');
-    return;
-  }
-  if (newText === el.text.trim() && !editingIsNew) {
-    closeEditSheet();
-    return;
-  }
-
-  // Update in-memory element
-  el.text = newText;
-
-  // Update scene heading display if needed
-  if (el.type === 'Scene Heading') {
-    script.scenes[editingSceneIdx].heading = formatSceneHeading(newText);
-    document.getElementById('editorSceneTitle').textContent = script.scenes[editingSceneIdx].heading;
-  }
-
-  // Update XML DOM
-  updateXmlElement(script, editingSceneIdx, editingElIdx, newText);
-
-  // Persist and refresh
-  editingIsNew = false; // Clear new flag before close so ghost cleanup doesn't trigger
-  saveState();
-  renderEditor();
-  closeEditSheet();
-  showToast('Edit saved');
-}
-
-// Default placeholder texts for new elements
-const NEW_ELEMENT_PLACEHOLDERS = new Set([
-  '', ' ', 'INT. NEW LOCATION - DAY', 'CHARACTER NAME', '(beat)', 'CUT TO:'
-]);
-
-function closeEditSheet() {
-  // If this was a brand new element and user cancelled, remove the ghost element
-  if (editingIsNew && editingSceneIdx !== null && editingElIdx !== null) {
-    const script = getActiveScript();
-    if (script) {
-      const scene = script.scenes[editingSceneIdx];
-      const el = scene.elements[editingElIdx];
-      // Check if user's typed text in textarea differs from what we auto-filled
-      const taValue = document.getElementById('editSheetTextarea').value.trim();
-      const isUnchanged = NEW_ELEMENT_PLACEHOLDERS.has(taValue) || taValue === '';
-      if (el && isUnchanged) {
-        // Remove from XML DOM
-        if (el.xmlParagraph && el.xmlParagraph.parentNode) {
-          el.xmlParagraph.parentNode.removeChild(el.xmlParagraph);
-        }
-        // Remove from elements array
-        scene.elements.splice(editingElIdx, 1);
-        // Sync rawXml and reindex
-        if (script.xmlDoc) {
-          script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
-          reindexParagraphs(script);
-        }
-        saveState();
-      }
-    }
-  }
-  document.getElementById('editOverlay').classList.remove('active');
-  document.getElementById('editSheetTextarea').blur();
-  // Re-render editor to pick up any type changes or ghost removal
-  renderEditor();
-  editingSceneIdx = null;
-  editingElIdx = null;
-  editingIsNew = false;
-}
-
-function cancelEdit(event) {
-  // Only close if tapping the overlay background, not the sheet itself
-  if (event.target === event.currentTarget) {
-    closeEditSheet();
-  }
-}
-
-function updateXmlElement(script, sceneIdx, elIdx, newText) {
-  const el = script.scenes[sceneIdx].elements[elIdx];
-  if (!el || !el.xmlParagraph) return;
-
-  const textNodes = el.xmlParagraph.querySelectorAll('Text');
-  if (textNodes.length === 1) {
-    textNodes[0].textContent = newText;
-  } else if (textNodes.length > 1) {
-    // Multiple Text nodes (formatted runs). Collapse into one.
-    const firstText = textNodes[0];
-    firstText.textContent = newText;
-    for (let i = textNodes.length - 1; i > 0; i--) {
-      textNodes[i].parentNode.removeChild(textNodes[i]);
-    }
-  }
-
-  // Sync rawXml from the live DOM so export picks up all changes
-  if (script.xmlDoc) {
-    script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
-  }
-}
-
-// ========== TYPE PICKER ==========
-const ELEMENT_TYPES = [
-  { type: 'Scene Heading', hint: 'INT. / EXT.' },
-  { type: 'Action', hint: 'Description' },
-  { type: 'Character', hint: 'Speaker name' },
-  { type: 'Dialogue', hint: 'Spoken lines' },
-  { type: 'Parenthetical', hint: 'Acting note' },
-  { type: 'Transition', hint: 'CUT TO:' }
-];
-
-// Smart type inference based on previous element
-function suggestNextType(prevType) {
-  switch(prevType) {
-    case 'Character': return 'Dialogue';
-    case 'Dialogue': return 'Character';
-    case 'Parenthetical': return 'Dialogue';
-    case 'Scene Heading': return 'Action';
-    case 'Transition': return 'Scene Heading';
-    case 'Action': return 'Character';
-    default: return 'Action';
-  }
-}
-
-let typePickerCallback = null;
-
-function openTypePicker(title, suggestedType, callback) {
-  typePickerCallback = callback;
-  document.getElementById('typePickerTitle').textContent = title;
-  const list = document.getElementById('typePickerList');
-  // Sort so suggested type is first
-  const sorted = [...ELEMENT_TYPES].sort((a, b) => {
-    if (a.type === suggestedType) return -1;
-    if (b.type === suggestedType) return 1;
-    return 0;
-  });
-  list.innerHTML = sorted.map(et => {
-    const isSuggested = et.type === suggestedType;
-    return `<button class="type-picker-item${isSuggested ? ' suggested' : ''}" onclick="selectType('${et.type}')">
-      <span class="type-picker-item-label">${et.type}${isSuggested ? ' (suggested)' : ''}</span>
-      <span class="type-picker-item-hint">${et.hint}</span>
-    </button>`;
-  }).join('');
-  document.getElementById('typePickerOverlay').classList.add('active');
-}
-
-function closeTypePicker() {
-  document.getElementById('typePickerOverlay').classList.remove('active');
-  typePickerCallback = null;
-}
-
-function selectType(type) {
-  const cb = typePickerCallback;
-  closeTypePicker();
-  if (cb) cb(type);
-}
-
-// ========== ADD NEW ELEMENT ==========
-function openTypePickerForAdd(sceneIdx, afterElIdx) {
-  const script = getActiveScript();
-  if (!script) return;
-  const scene = script.scenes[sceneIdx];
-
-  // Determine suggestion based on previous element
-  let prevType = 'Action';
-  if (afterElIdx >= 0 && afterElIdx < scene.elements.length) {
-    prevType = scene.elements[afterElIdx].type;
-  }
-  const suggested = suggestNextType(prevType);
-
-  openTypePicker('Add New Element', suggested, function(chosenType) {
-    addNewElement(sceneIdx, afterElIdx, chosenType);
-  });
-}
-
-function addNewElement(sceneIdx, afterElIdx, type) {
-  const script = getActiveScript();
-  if (!script) return;
-  const scene = script.scenes[sceneIdx];
-
-  // Create new XML paragraph in the DOM
-  const newParagraph = script.xmlDoc.createElement('Paragraph');
-  newParagraph.setAttribute('Type', type);
-  const newText = script.xmlDoc.createElement('Text');
-  newText.textContent = type === 'Scene Heading' ? 'INT. NEW LOCATION - DAY' :
-                        type === 'Character' ? 'CHARACTER NAME' :
-                        type === 'Parenthetical' ? '(beat)' :
-                        type === 'Transition' ? 'CUT TO:' : ' ';
-  newParagraph.appendChild(newText);
-
-  // Insert into XML DOM after the reference element
-  const contentEl = script.xmlDoc.querySelector('Content');
-  if (afterElIdx >= 0 && scene.elements[afterElIdx] && scene.elements[afterElIdx].xmlParagraph) {
-    const refParagraph = scene.elements[afterElIdx].xmlParagraph;
-    refParagraph.parentNode.insertBefore(newParagraph, refParagraph.nextSibling);
-  } else if (scene.elements.length > 0 && scene.elements[0].xmlParagraph) {
-    // Insert before first element of scene
-    scene.elements[0].xmlParagraph.parentNode.insertBefore(newParagraph, scene.elements[0].xmlParagraph);
+  if (!edit) return;
+  const value=$("elementText").value.replace(/\r\n?/g,"\n");
+  if (!value.trim()) { $("editError").textContent="Enter text before saving. Use Delete to remove a paragraph."; return; }
+  const ps=edit.area==="title"?titleParagraphs():paragraphs();
+  const parent=edit.area==="title"?titleContent():content();
+  if (!parent) { $("editError").textContent="This section is unavailable."; return; }
+  const type=$("elementType").value;
+  if (edit.isNew) {
+    snapshot();
+    const p=xmlDoc.createElementNS(parent.namespaceURI,"Paragraph"); p.setAttribute("Type",type); p.setAttribute("id",uid());
+    setText(p,value);
+    const ref=ps[edit.index];
+    if (ref) ref.after(p); else parent.prepend(p);
   } else {
-    // Append to content
-    contentEl.appendChild(newParagraph);
+    const p=ps[edit.index]; if (!p) return;
+    if (type===typeOf(p)&&value===textOf(p)) { closeEdit(); return; }
+    snapshot();
+    if(typeOf(p)==="Scene Heading"&&type!=="Scene Heading")direct(p,"SceneProperties").forEach(node=>node.remove());
+    p.setAttribute("Type",type); setText(p,value);
   }
-
-  // Sync rawXml
-  script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
-
-  // Re-index all pIdx values by re-scanning the XML
-  reindexParagraphs(script);
-
-  // Create new in-memory element
-  const newEl = {
-    type: type,
-    text: newText.textContent,
-    pIdx: -1, // will be set by reindex
-    xmlParagraph: newParagraph
-  };
-
-  // Find the correct pIdx for the new element
-  const allParagraphs = contentEl.querySelectorAll('Paragraph');
-  for (let i = 0; i < allParagraphs.length; i++) {
-    if (allParagraphs[i] === newParagraph) {
-      newEl.pIdx = i;
-      break;
-    }
-  }
-
-  // Insert into scene elements array
-  const insertIdx = afterElIdx + 1;
-  scene.elements.splice(insertIdx, 0, newEl);
-
-  // Update scene heading if new element is a Scene Heading
-  if (type === 'Scene Heading' && insertIdx === 0) {
-    scene.heading = formatSceneHeading(newEl.text);
-  }
-
-  // Reindex all pIdx across all scenes
-  reindexParagraphs(script);
-
-  saveState();
-  renderEditor();
-
-  // Auto-open edit sheet for the new element, flagged as new
-  setTimeout(() => {
-    openEditSheet(sceneIdx, insertIdx);
-    editingIsNew = true;
-  }, 150);
+  closeEdit(); afterChange();
 }
-
-function reindexParagraphs(script) {
-  const contentEl = script.xmlDoc.querySelector('Content');
-  if (!contentEl) return;
-  const allParagraphs = contentEl.querySelectorAll('Paragraph');
-  script.scenes.forEach(scene => {
-    scene.elements.forEach(el => {
-      if (el.xmlParagraph) {
-        for (let i = 0; i < allParagraphs.length; i++) {
-          if (allParagraphs[i] === el.xmlParagraph) {
-            el.pIdx = i;
-            break;
-          }
-        }
-      }
-    });
-  });
+function deleteParagraph() {
+  if (!edit || edit.isNew) return;
+  const ps=edit.area==="title"?titleParagraphs():paragraphs();
+  const p=ps[edit.index]; if (!p) return;
+  if (!confirm("Delete this paragraph? You can use Undo afterward.")) return;
+  snapshot(); p.remove(); closeEdit(); afterChange();
 }
-
-// ========== ADD NEW SCENE ==========
-function addNewScene() {
-  const script = getActiveScript();
-  if (!script) return;
-
-  // Create scene heading in XML DOM
-  const newParagraph = script.xmlDoc.createElement('Paragraph');
-  newParagraph.setAttribute('Type', 'Scene Heading');
-  const newText = script.xmlDoc.createElement('Text');
-  newText.textContent = 'INT. NEW LOCATION - DAY';
-  newParagraph.appendChild(newText);
-
-  const contentEl = script.xmlDoc.querySelector('Content');
-  contentEl.appendChild(newParagraph);
-
-  // Sync rawXml
-  script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
-
-  // Get pIdx
-  const allParagraphs = contentEl.querySelectorAll('Paragraph');
-  const pIdx = allParagraphs.length - 1;
-
-  // Create scene object
-  const newScene = {
-    heading: 'INT. NEW LOCATION - DAY',
-    elements: [{
-      type: 'Scene Heading',
-      text: 'INT. NEW LOCATION - DAY',
-      pIdx: pIdx,
-      xmlParagraph: newParagraph
-    }],
-    startPage: script.totalPages + 1,
-    endPage: script.totalPages + 1
-  };
-
-  script.scenes.push(newScene);
-  script.totalPages++;
-
-  saveState();
-  updateSceneNavigator();
-  renderScriptList();
-
-  // Navigate to new scene
-  appState.activeSceneIndex = script.scenes.length - 1;
-  saveState();
-  renderEditor();
-  navigateTo('editor');
-  showToast('New scene added');
+function addScene() {
+  if (!active()) return;
+  const ps=paragraphs(); const sections=sceneSections();
+  let after=ps.length-1;
+  if (screen==="editor"&&view==="scene"&&sections[selectedScene]) after=sections[selectedScene].end;
+  edit={area:"content",index:after,isNew:true};
+  openEdit(edit); $("elementType").value="Scene Heading"; $("editTitle").textContent="Add scene"; $("elementText").placeholder="INT. LOCATION - DAY";
 }
-
-// ========== RETYPE ELEMENT ==========
-function openTypePickerForRetype() {
-  if (editingSceneIdx === null || editingElIdx === null) return;
-  const script = getActiveScript();
-  if (!script) return;
-  const el = script.scenes[editingSceneIdx].elements[editingElIdx];
-  if (!el) return;
-
-  openTypePicker('Change Element Type', el.type, function(newType) {
-    if (newType === el.type) return; // No change
-    changeElementType(editingSceneIdx, editingElIdx, newType);
-  });
+function undoChange() {
+  if (!undo.length || !active()) return;
+  xmlDoc=parseFDX(undo.pop()); afterChange();
 }
-
-function changeElementType(sceneIdx, elIdx, newType) {
-  const script = getActiveScript();
-  if (!script) return;
-  const el = script.scenes[sceneIdx].elements[elIdx];
-  if (!el) return;
-
-  const oldType = el.type;
-  el.type = newType;
-
-  // Update XML DOM
-  if (el.xmlParagraph) {
-    el.xmlParagraph.setAttribute('Type', newType);
-  }
-
-  // Update scene heading if we changed the first Scene Heading
-  if (oldType === 'Scene Heading' && elIdx === 0) {
-    // Scene lost its heading type — use next Scene Heading or first element
-    const nextHeading = script.scenes[sceneIdx].elements.find(e => e.type === 'Scene Heading');
-    script.scenes[sceneIdx].heading = nextHeading ? formatSceneHeading(nextHeading.text) : 'UNTITLED SCENE';
-  }
-  if (newType === 'Scene Heading' && elIdx === 0) {
-    script.scenes[sceneIdx].heading = formatSceneHeading(el.text);
-  }
-
-  // Sync rawXml
-  if (script.xmlDoc) {
-    script.rawXml = new XMLSerializer().serializeToString(script.xmlDoc);
-  }
-
-  // Update the edit sheet type label
-  const typeLabel = document.getElementById('editSheetType');
-  typeLabel.innerHTML = escHtml(newType) + ' <svg class="edit-sheet-type-arrow" width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 1l3 3 3-3"/></svg>';
-
-  saveState();
-  showToast('Changed to ' + newType);
+function renderExport() {
+  const doc=active(); $("exportEmpty").hidden=!!doc; $("exportForm").hidden=!doc;
+  if (!doc) return;
+  const sections=sceneSections();
+  const sets=["sceneExportSelect","rangeStart","rangeEnd"].map($);
+  sets.forEach((select,j)=>{const old=select.value; select.replaceChildren(); sections.forEach((sec,i)=>select.add(new Option((i+1)+". "+sec.label,i))); if (Array.from(select.options).some(o=>o.value===old))select.value=old; else if(j===2&&sections.length)select.value=String(sections.length-1);});
+  if (sets[0].options.length && view==="scene") sets[0].value=String(Math.min(selectedScene,sections.length-1));
+  $("scopeSelect").querySelectorAll("option").forEach(o=>o.disabled=o.value!=="full"&&!sections.length);
+  if (!sections.length) $("scopeSelect").value="full";
+  updateExportFields();
 }
-
-// ========== CREATE NEW SCRIPT ==========
-function createNewScript() {
-  const title = prompt('Script title:');
-  if (!title || !title.trim()) return;
-
-  const cleanTitle = title.trim().toUpperCase();
-  const fileName = cleanTitle.replace(/\s+/g, '_') + '.fdx';
-
-  // Build minimal valid FDX XML
-  const xmlStr = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<FinalDraft DocumentType="Script" Template="No" Version="6">
-<Content>
-<Paragraph Type="Scene Heading"><Text>INT. LOCATION - DAY</Text></Paragraph>
-</Content>
-<TitlePage>
-<Content>
-<Paragraph Type="Script Title"><Text>${escXml(cleanTitle)}</Text></Paragraph>
-</Content>
-</TitlePage>
-</FinalDraft>`;
-
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlStr, 'text/xml');
-  const contentEl = xmlDoc.querySelector('FinalDraft > Content');
-  const firstP = contentEl.querySelector('Paragraph');
-
-  const script = {
-    id: 'script_' + Date.now(),
-    title: cleanTitle,
-    fileName: fileName,
-    scenes: [{
-      heading: 'INT. LOCATION - DAY',
-      elements: [{
-        type: 'Scene Heading',
-        text: 'INT. LOCATION - DAY',
-        pIdx: 0,
-        xmlParagraph: firstP
-      }],
-      startPage: 1,
-      endPage: 1
-    }],
-    totalPages: 1,
-    importDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    rawXml: xmlStr,
-    xmlDoc: xmlDoc
-  };
-
-  appState.scripts.push(script);
-  appState.activeScriptId = script.id;
-  appState.activeSceneIndex = 0;
-  saveState();
-  renderScriptList();
-  updateSceneNavigator();
-  updateExportScreen();
-  updateSettingsScreen();
-  renderEditor();
-  navigateTo('scenes');
-  showToast(cleanTitle + ' created');
+function updateExportFields() {
+  const scope=$("scopeSelect").value,format=$("formatSelect").value;
+  $("sceneExportField").hidden=scope!=="scene"; $("rangeExportFields").hidden=scope!=="range";
+  $("exportHelp").textContent=format==="fdx"?"A new FDX file downloads. Open it in Final Draft 13 to continue editing.":format==="txt"?"A plain text file downloads with screenplay indentation.":"A print-ready script opens here. Choose Save as PDF in your device's print dialog.";
+  $("exportButton").textContent=format==="pdf"?"Prepare PDF":"Download "+format.toUpperCase();
+  $("exportError").textContent="";
+  const invalidRange=scope==="range"&&Number($("rangeStart").value)>Number($("rangeEnd").value);
+  $("exportButton").disabled=invalidRange;
+  if(invalidRange)$("exportError").textContent="The end scene must come after the start scene.";
 }
-
-// Helper: escape for XML attribute/text content
-function escXml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function chosenIndices() {
+  const ps=paragraphs(),sections=sceneSections(),scope=$("scopeSelect").value;
+  if (scope==="full") return ps.map((_,i)=>i);
+  if (!sections.length) throw new Error("There are no scenes to export.");
+  let start,end;
+  if (scope==="scene") { start=end=Number($("sceneExportSelect").value); }
+  else { start=Number($("rangeStart").value); end=Number($("rangeEnd").value); }
+  if (!Number.isInteger(start)||!Number.isInteger(end)||start<0||end>=sections.length||start>end) throw new Error("Choose a valid scene range.");
+  const indices=[]; for(let i=sections[start].start;i<=sections[end].end;i++) indices.push(i);
+  return indices;
 }
-
-function switchSceneTab(tab, btn) {
-  document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const sceneTabContent = document.getElementById('sceneTabContent');
-  const listContainer = document.getElementById('scenesListContainer');
-  const searchPanel = document.getElementById('searchPanel');
-  if (tab === 'search') {
-    sceneTabContent.style.display = 'none';
-    searchPanel.style.display = 'flex';
-    searchPanel.style.flexDirection = 'column';
-    searchPanel.style.flex = '1';
-  } else {
-    sceneTabContent.style.display = 'flex';
-    listContainer.style.display = 'block';
-    searchPanel.style.display = 'none';
-  }
+function filename(suffix,ext) {
+  const base=(active().name||"script.fdx").replace(/\.fdx$/i,"").replace(/[\\/:*?"<>|]/g,"-");
+  return base+(suffix?" - "+suffix:"")+"."+ext;
 }
-
-function searchScenes(query) {
-  const script = getActiveScript();
-  const container = document.getElementById('searchResults');
-  if (!script || !query.trim()) {
-    container.innerHTML = '';
-    return;
-  }
-  const q = query.toLowerCase();
-  const results = script.scenes.map((s, i) => ({ scene: s, index: i }))
-    .filter(item => item.scene.heading.toLowerCase().includes(q) ||
-      item.scene.elements.some(el => el.text.toLowerCase().includes(q)));
-
-  container.innerHTML = results.map(item => `
-    <div class="scene-item" onclick="openScene(${item.index})">
-      <div class="scene-num">${item.index + 1}</div>
-      <div class="scene-info">
-        <div class="scene-heading-text">${escHtml(item.scene.heading)}</div>
-        <div class="scene-pages">pp. ${item.scene.startPage}-${item.scene.endPage}</div>
-      </div>
-      <div class="scene-arrow"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="#f6d0f7" stroke-width="2" stroke-linecap="round"><path d="M1 1l6 6-6 6"/></svg></div>
-    </div>
-  `).join('') || '<div class="no-script-msg"><p>No matching scenes.</p></div>';
-}
-
-// ========== EXPORT ==========
-function updateExportScreen() {
-  const script = getActiveScript();
-  const noScript = document.getElementById('exportNoScript');
-  const options = document.getElementById('exportOptions');
-  if (!script) {
-    noScript.style.display = 'block';
-    options.style.display = 'none';
-    return;
-  }
-  noScript.style.display = 'none';
-  options.style.display = 'block';
-  document.getElementById('exportFullDesc').textContent =
-    `All ${script.scenes.length} scenes, ~${script.totalPages} pages`;
-  if (appState.activeSceneIndex !== null && appState.activeSceneIndex < script.scenes.length) {
-    document.getElementById('exportSceneDesc').textContent =
-      'Scene ' + (appState.activeSceneIndex + 1) + ': ' + script.scenes[appState.activeSceneIndex].heading.substring(0, 30);
-  }
-  document.getElementById('rangeEnd').max = script.scenes.length;
-  document.getElementById('rangeEnd').value = script.scenes.length;
-  document.getElementById('rangeStart').max = script.scenes.length;
-}
-
-function selectExport(el, type) {
-  document.querySelectorAll('.export-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  appState.selectedExport = type;
-  const rangeInputs = document.getElementById('rangeInputs');
-  rangeInputs.classList.toggle('visible', type === 'range');
-}
-
-function handleExport() {
-  const script = getActiveScript();
-  if (!script) { showToast('No script loaded'); return; }
-
-  if (appState.selectedExport === 'fdx') {
-    exportFDX(script);
-  } else if (appState.selectedExport === 'full') {
-    exportPDF(script, 0, script.scenes.length - 1);
-  } else if (appState.selectedExport === 'scene') {
-    if (appState.activeSceneIndex === null) {
-      showToast('Select a scene first from the Scene Navigator');
+function download(data,name,type) {
+  const blob=new Blob([data],{type});
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && navigator.share && navigator.canShare) {
+    const file=new File([blob],name,{type});
+    if (navigator.canShare({files:[file]})) {
+      navigator.share({files:[file],title:name}).catch(err=>{if(err.name!=="AbortError")anchor(blob,name);});
       return;
     }
-    exportPDF(script, appState.activeSceneIndex, appState.activeSceneIndex);
-  } else if (appState.selectedExport === 'range') {
-    const start = parseInt(document.getElementById('rangeStart').value) - 1;
-    const end = parseInt(document.getElementById('rangeEnd').value) - 1;
-    if (isNaN(start) || isNaN(end) || start < 0 || end >= script.scenes.length || start > end) {
-      showToast('Invalid scene range');
-      return;
-    }
-    exportPDF(script, start, end);
   }
+  anchor(blob,name);
 }
-
-function exportFDX(script) {
-  // Use the latest rawXml which reflects all edits via updateXmlElement
-  let xml = script.rawXml;
-  if (!xml) {
-    showToast('Original FDX data not available');
-    return;
-  }
-  // XMLSerializer strips the <?xml?> declaration — Final Draft requires it
-  if (!xml.trim().startsWith('<?xml')) {
-    xml = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n' + xml;
-  }
-  // Use octet-stream so iOS Safari doesn't append .xml to the filename
-  const blob = new Blob([xml], { type: 'application/octet-stream' });
-  const fileName = script.fileName || 'script.fdx';
-
-  // iOS Safari: share sheet approach works more reliably than anchor download
-  if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], fileName)] })) {
-    const file = new File([blob], fileName, { type: 'application/octet-stream' });
-    navigator.share({ files: [file], title: script.title })
-      .then(() => showToast('FDX shared'))
-      .catch(err => {
-        if (err.name !== 'AbortError') {
-          // Fallback to anchor download if share fails
-          anchorDownload(blob, fileName);
-        }
-      });
-  } else {
-    anchorDownload(blob, fileName);
-  }
+function anchor(blob,name) {
+  const url=URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=url; a.download=name; document.body.append(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  setStatus("Download started");
 }
-
-function anchorDownload(blob, fileName) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('FDX exported with your edits');
-}
-
-function exportPDF(script, startIdx, endIdx) {
-  const scenes = script.scenes.slice(startIdx, endIdx + 1);
-  let bodyHtml = '';
-
-  scenes.forEach((scene, idx) => {
-    if (idx > 0) bodyHtml += '<div class="page-break"></div>';
-    scene.elements.forEach(el => {
-      const txt = el.text.trim();
-      if (!txt || /^\.+$/.test(txt)) return;
-      if (TITLE_PAGE_TYPES.has(el.type)) return;
-      switch(el.type) {
-        case 'Scene Heading':
-          bodyHtml += '<p class="scene-heading">' + escHtml(formatSceneHeading(txt)) + '</p>';
-          break;
-        case 'Action':
-          bodyHtml += '<p class="action">' + escHtml(txt) + '</p>';
-          break;
-        case 'Character':
-          bodyHtml += '<p class="character">' + escHtml(txt) + '</p>';
-          break;
-        case 'Dialogue':
-          bodyHtml += '<p class="dialogue">' + escHtml(txt) + '</p>';
-          break;
-        case 'Parenthetical':
-          bodyHtml += '<p class="parenthetical">' + escHtml(txt) + '</p>';
-          break;
-        case 'Transition':
-          bodyHtml += '<p class="transition">' + escHtml(txt) + '</p>';
-          break;
-        default:
-          bodyHtml += '<p class="action">' + escHtml(txt) + '</p>';
+function exportSelected() {
+  if (!active()||!xmlDoc) return;
+  try {
+    const indices=chosenIndices(),scope=$("scopeSelect").value,format=$("formatSelect").value;
+    const suffix=scope==="full"?"":scope==="scene"?"Scene "+(Number($("sceneExportSelect").value)+1):"Scenes "+(Number($("rangeStart").value)+1)+"-"+(Number($("rangeEnd").value)+1);
+    if (format==="fdx") {
+      if (scope==="full") download(serialize(xmlDoc),filename(suffix,"fdx"),"application/octet-stream");
+      else {
+        const copy=parseFDX(serialize(xmlDoc)), all=direct(child(copy.documentElement,"Content"),"Paragraph"), keep=new Set(indices);
+        all.forEach((p,i)=>{if(!keep.has(i))p.remove();});
+        const tp=child(copy.documentElement,"TitlePage"); if(tp)tp.remove();
+        download(serialize(copy),filename(suffix,"fdx"),"application/octet-stream");
       }
-    });
+    } else if (format==="txt") {
+      const lines=[];
+      if(scope==="full"&&titleParagraphs().length){titleParagraphs().forEach(p=>lines.push(textOf(p)));lines.push("\f");}
+      indices.forEach(i=>lines.push(layoutLine(paragraphs()[i])));
+      download(lines.join("\r\n")+"\r\n",filename(suffix,"txt"),"text/plain;charset=utf-8");
+    } else preparePrint(indices,scope,suffix);
+  } catch(err) { $("exportError").textContent=errorMessage(err); }
+}
+function layoutLine(p) {
+  const type=typeOf(p), raw=textOf(p);
+  if(!raw)return "";
+  const indent={"Character":25,"Dialogue":15,"Parenthetical":20,"Transition":48}[type]||0;
+  const width=type==="Dialogue"?35:type==="Parenthetical"?30:65-indent;
+  const lines=[];
+  for(const original of raw.split("\n")) {
+    const words=original.split(/\s+/); let line="";
+    for(const word of words) {
+      if(!word)continue;
+      if(line&&line.length+word.length+1>width){lines.push(" ".repeat(indent)+line);line=word;} else line+=(line?" ":"")+word;
+    }
+    lines.push(" ".repeat(indent)+line);
+  }
+  return lines.join("\r\n");
+}
+function preparePrint(indices,scope,suffix) {
+  const pages=$("printPages");pages.replaceChildren();
+  if(scope==="full"&&titleParagraphs().some(p=>textOf(p).trim())) {
+    const title=document.createElement("div");title.className="title-page";
+    titleParagraphs().forEach(p=>{const x=document.createElement("p");x.textContent=textOf(p);title.append(x);});
+    pages.append(title);
+  }
+  indices.forEach(i=>{
+    const p=paragraphs()[i],x=document.createElement("p");
+    x.className=typeOf(p).toLowerCase().replace(/[^a-z]+/g,"-")+(textOf(p)?"":" blank");
+    x.textContent=textOf(p);pages.append(x);
   });
-
-  const label = startIdx === endIdx
-    ? 'Scene ' + (startIdx + 1)
-    : (startIdx === 0 && endIdx === script.scenes.length - 1)
-      ? 'Full Script'
-      : 'Scenes ' + (startIdx + 1) + '-' + (endIdx + 1);
-
-  const printHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-<title>${escHtml(script.title)} - ${label}</title>
-<style>
-@page { size: letter; margin: 1in; }
-body { font-family: 'Courier Prime', 'Courier New', Courier, monospace; font-size: 12pt; line-height: 1.1; color: #000; }
-.scene-heading { font-weight: bold; text-transform: uppercase; margin: 24pt 0 12pt; }
-.action { margin: 0 0 12pt; }
-.character { text-transform: uppercase; text-align: left; margin: 12pt 0 0; padding-left: 2.5in; }
-.dialogue { margin: 0 0 12pt; padding-left: 1.5in; padding-right: 1.5in; }
-.parenthetical { margin: 0 0 0; padding-left: 2in; padding-right: 1.5in; }
-.transition { text-align: right; text-transform: uppercase; margin: 12pt 0; }
-.page-break { page-break-after: always; }
-p { margin: 0 0 0; }
-</style></head><body>${bodyHtml}</body></html>`;
-
-  const printWin = window.open('', '_blank');
-  if (printWin) {
-    printWin.document.write(printHtml);
-    printWin.document.close();
-    setTimeout(() => {
-      printWin.print();
-    }, 400);
-    showToast(label + ' ready to print/save as PDF');
-  } else {
-    showToast('Pop-up blocked. Allow pop-ups to export PDF.');
-  }
+  printActive=true;$("app").style.display="none";$("printView").style.display="block";
+  document.title=filename(suffix,"pdf");
+  window.scrollTo(0,0);
 }
-
-// ========== SETTINGS ==========
-function updateSettingsScreen() {
-  document.getElementById('scriptCount').textContent = appState.scripts.length;
-  const dropboxToggle = document.getElementById('dropboxToggle');
-  if (appState.settings.dropboxEnabled) {
-    dropboxToggle.classList.add('on');
-    document.getElementById('dropboxStatus').textContent = 'Ready to connect';
-  } else {
-    dropboxToggle.classList.remove('on');
-    document.getElementById('dropboxStatus').textContent = 'Not connected';
-  }
-  const sceneNumToggle = document.getElementById('sceneNumToggle');
-  if (appState.settings.showSceneNumbers) {
-    sceneNumToggle.classList.add('on');
-  } else {
-    sceneNumToggle.classList.remove('on');
-  }
-}
-
-function toggleDropbox() {
-  appState.settings.dropboxEnabled = !appState.settings.dropboxEnabled;
-  saveState();
-  updateSettingsScreen();
-  showToast(appState.settings.dropboxEnabled ? 'Dropbox sync enabled' : 'Dropbox sync disabled');
-}
-
-function toggleSceneNumbers() {
-  appState.settings.showSceneNumbers = !appState.settings.showSceneNumbers;
-  saveState();
-  updateSettingsScreen();
-}
-
-function confirmClearScripts() {
-  if (appState.scripts.length === 0) {
-    showToast('No scripts to clear');
-    return;
-  }
-  if (confirm('Clear all imported scripts? This cannot be undone.')) {
-    appState.scripts = [];
-    appState.activeScriptId = null;
-    appState.activeSceneIndex = null;
-    saveState();
-    renderScriptList();
-    updateSceneNavigator();
-    updateExportScreen();
-    updateSettingsScreen();
-    showToast('All scripts cleared');
-  }
-}
-
-// ========== HELPERS ==========
-function getActiveScript() {
-  return appState.scripts.find(s => s.id === appState.activeScriptId) || null;
-}
-
-function escHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-// ========== SERVICE WORKER (with auto-update) ==========
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js').then(reg => {
-    reg.update();
-    reg.addEventListener('updatefound', () => {
-      const newWorker = reg.installing;
-      newWorker.addEventListener('statechange', () => {
-        if (newWorker.state === 'activated') {
-          window.location.reload();
-        }
-      });
-    });
-  }).catch(() => {});
-}
-
-// ========== START ==========
+function closePrint(){printActive=false;$("printView").style.display="none";$("app").style.display="flex";document.title="The Draft";}
+if("serviceWorker" in navigator && location.protocol!=="file:") navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Offline cache unavailable",err));
 init();
 </script>
 </body>

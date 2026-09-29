@@ -1,12 +1,12 @@
 {
-  "name": "the draft",
-  "short_name": "the draft",
-  "description": "Edit. Protect. Export.",
+  "name": "The Draft",
+  "short_name": "The Draft",
+  "description": "Edit screenplay scenes and scripts for Final Draft",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#E668A7",
-  "orientation": "portrait",
+  "theme_color": "#d90060",
   "icons": [
     {
       "src": "icon.png",
