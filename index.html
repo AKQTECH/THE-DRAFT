@@ -39,7 +39,7 @@ h1,h2,h3,p{margin-top:0}h1{font-size:25px;line-height:1.2}h2{font-size:15px;text
     <div class="eyebrow">A writing desk for Final Draft</div><h1>Work on a scene or the whole script.</h1>
     <p class="intro">Open a Final Draft .fdx file, edit its screenplay elements, then save a new .fdx for Final Draft 13. You can also export plain text or prepare a text-based PDF.</p>
     <div class="panel tint stack"><h2>Start writing</h2><div class="row"><button class="button" id="importButton">Import FDX</button><button class="button secondary" id="newButton">New script</button></div><p class="small" style="margin:0">Your working copy saves on this device. Export an FDX to move your changes back to Final Draft.</p></div>
-    <input id="fileInput" type="file" accept=".fdx,application/xml,text/xml" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" tabindex="-1">
+    <input id="fileInput" type="file" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" tabindex="-1">
     <h2>Your scripts</h2><div id="docList"></div>
   </div></main>
   <main class="screen" id="scenesScreen"><div class="wrap"><div class="row between"><h1>Scenes</h1><button class="button secondary" id="addSceneButton">Add scene</button></div><p class="muted" id="sceneIntro"></p><div id="sceneList"></div></div></main>
@@ -60,7 +60,7 @@ h1,h2,h3,p{margin-top:0}h1{font-size:25px;line-height:1.2}h2{font-size:15px;text
       <div id="rangeExportFields" class="row" hidden><div class="field" style="flex:1"><label class="field-label" for="rangeStart">From</label><select class="input" id="rangeStart"></select></div><div class="field" style="flex:1"><label class="field-label" for="rangeEnd">Through</label><select class="input" id="rangeEnd"></select></div></div>
       <p class="muted" id="exportHelp"></p><button class="button wide" id="exportButton">Export</button><p class="error-text" id="exportError" role="alert"></p>
     </div>
-    <p class="muted small">The Draft v3.1<br>Built for April Korto Quioh</p>
+    <p class="muted small">The Draft v3.2<br>Built for April Korto Quioh</p>
   </div></main>
   <nav class="nav" aria-label="Main"><button data-screen="home" class="active">Home</button><button data-screen="scenes">Scenes</button><button data-screen="editor">Script</button><button data-screen="export">Export</button></nav>
 </div>
