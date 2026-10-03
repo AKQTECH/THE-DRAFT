@@ -25,12 +25,12 @@ select.input{-webkit-appearance:none;appearance:none;padding-right:44px;backgrou
 .doc-card{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;display:flex;gap:12px;align-items:center;justify-content:space-between}.doc-card strong{font-size:15px}.doc-card .muted{margin:4px 0 0}.card-actions{display:flex;gap:7px;flex-wrap:wrap}.card-actions .button{padding:8px 10px}
 .scene-card{width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:15px;margin:7px 0;min-height:56px;color:var(--ink)}.scene-card strong{display:block;font-size:13px}.scene-card span{display:block;color:#66535e;font-size:12px;margin-top:4px}
 .toolbar{position:sticky;top:-20px;z-index:2;background:var(--white);padding:0 0 12px;border-bottom:1px solid var(--line);margin-bottom:16px}.toolbar h1{font-size:20px;margin-bottom:10px}.toolbar select{max-width:100%}
-.paper{max-width:740px;margin:16px auto;background:#fff;border:1px solid var(--line);box-shadow:0 6px 22px #2b102010;padding:24px 18px}.paragraph{position:relative;display:block;border:1px solid transparent;border-radius:6px;background:#fff;padding:7px 8px;margin:2px 0;width:100%;text-align:left;min-height:38px;color:#111;font:14px/1.4 "Courier New",Courier,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.paragraph:hover,.paragraph:focus-visible{border-color:var(--pink);background:#fff8fc}.paragraph .type{display:block;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--pink);margin-bottom:2px}.paragraph.scene-heading{font-weight:bold;text-transform:uppercase;margin-top:15px}.paragraph.character{padding-left:36%;text-transform:uppercase;margin-top:10px}.paragraph.dialogue{padding-left:25%;padding-right:22%}.paragraph.parenthetical{padding-left:31%;padding-right:20%}.paragraph.transition{text-align:right;text-transform:uppercase;margin-top:10px}.paragraph.blank{color:#876b7a;font-style:italic}.add-line{width:100%;border:1px dashed var(--line);background:#fff;color:var(--pink);min-height:44px;border-radius:8px;margin:7px 0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.add-line:hover{background:var(--blush)}
+.paper{max-width:740px;margin:16px auto;background:#fff;border:1px solid var(--line);box-shadow:0 6px 22px #2b102010;padding:24px 18px}.editor-section-heading{color:var(--pink);margin:14px 8px 10px}.paragraph{position:relative;display:block;border:1px solid transparent;border-radius:6px;background:#fff;padding:7px 8px;margin:2px 0;width:100%;text-align:left;min-height:38px;color:#111;font:14px/1.4 "Courier New",Courier,monospace;white-space:pre-wrap;overflow-wrap:anywhere;scroll-margin-top:120px}.paragraph:hover,.paragraph:focus-visible{border-color:var(--pink);background:#fff8fc}.paragraph .type{display:block;font:800 9px/1.4 "DM Sans",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--pink);margin-bottom:2px}.paragraph.scene-heading{font-weight:bold;text-transform:uppercase;margin-top:15px}.paragraph.character{padding-left:36%;text-transform:uppercase;margin-top:10px}.paragraph.dialogue{padding-left:25%;padding-right:22%}.paragraph.parenthetical{padding-left:31%;padding-right:20%}.paragraph.transition{text-align:right;text-transform:uppercase;margin-top:10px}.paragraph.blank{color:#876b7a;font-style:italic}.add-line{width:100%;border:1px dashed var(--line);background:#fff;color:var(--pink);min-height:44px;border-radius:8px;margin:7px 0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.add-line:hover{background:var(--blush)}
 .empty{border:1px dashed var(--pink);border-radius:14px;padding:25px;text-align:center;color:var(--pink);line-height:1.55}.notice{border-left:4px solid var(--pink);padding:10px 14px;background:var(--blush);color:var(--pink);font-size:13px;line-height:1.5}
 .modal{position:fixed;inset:0;background:#0008;z-index:20;display:none;align-items:flex-end;justify-content:center}.modal.open{display:flex}.sheet{width:100%;max-width:700px;max-height:calc(100dvh - var(--safe-top));overflow:auto;background:#fff;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + var(--safe-bottom));box-shadow:0 -10px 30px #0002}.sheet h2{color:var(--pink)}.sheet-actions{display:flex;gap:8px;flex-wrap:wrap}.sheet-actions .button{flex:1}.error-text{color:#a12b51;font-size:13px;min-height:18px}
 .print-view{display:none}.print-controls{display:flex;gap:9px;flex-wrap:wrap;padding:14px;background:var(--pink);color:var(--blush);align-items:center;justify-content:space-between}.print-controls p{margin:0;font-size:13px}.print-pages{max-width:816px;margin:20px auto;padding:60px 96px;background:#fff;box-shadow:0 4px 24px #0002;color:#000;font:12pt/1.08 "Courier New",Courier,monospace}.print-pages p{margin:0 0 12pt;white-space:pre-wrap;overflow-wrap:break-word}.print-pages .scene-heading{font-weight:bold;text-transform:uppercase;margin-top:12pt}.print-pages .character{margin:12pt 0 0 2in;text-transform:uppercase}.print-pages .dialogue{margin:0 1in 12pt 1in}.print-pages .parenthetical{margin:0 1in 0 1.5in}.print-pages .transition{text-align:right;text-transform:uppercase}.print-pages .title-page{text-align:center;min-height:8in;break-after:page}.print-pages .title-page p{margin:0 0 16pt}.print-pages .blank{height:12pt;margin:0}
 @media(max-width:500px){.paper{padding:14px 7px}.paragraph.character{padding-left:25%}.paragraph.dialogue{padding-left:17%;padding-right:10%}.paragraph.parenthetical{padding-left:23%;padding-right:10%}.doc-card{align-items:flex-start;flex-direction:column}.print-pages{padding:25px}}
-@media print{@page{size:letter;margin:1in 1in 1in 1.5in}html,body{background:#fff!important}.app,.modal,.print-controls{display:none!important}.print-view{display:block!important}.print-pages{box-shadow:none;max-width:none;margin:0;padding:0;font:12pt/1.08 "Courier New",Courier,monospace}.print-pages p{orphans:2;widows:2}.print-pages .scene-heading{break-after:avoid}.print-pages .character{break-after:avoid}.print-pages .title-page{min-height:8in}}
+@media print{@page{size:letter;margin:0}html,body{background:#fff!important}.app,.modal,.print-controls{display:none!important}.print-view{display:block!important}.print-pages{box-shadow:none;max-width:none;margin:0;padding:1in 1in 1in 1.5in;box-decoration-break:clone;-webkit-box-decoration-break:clone;font:12pt/1.08 "Courier New",Courier,monospace}.print-pages p{orphans:2;widows:2}.print-pages .scene-heading{break-after:avoid}.print-pages .character{break-after:avoid}.print-pages .title-page{min-height:8in}}
 </style>
 </head>
 <body>
@@ -46,7 +46,7 @@ select.input{-webkit-appearance:none;appearance:none;padding-right:44px;backgrou
   <main class="screen" id="scenesScreen"><div class="wrap"><div class="row between"><h1>Scenes</h1><button class="button secondary" id="addSceneButton">Add scene</button></div><p class="muted" id="sceneIntro"></p><div id="sceneList"></div></div></main>
   <main class="screen" id="editorScreen"><div class="wrap">
     <div class="toolbar"><div class="row between"><h1 id="editorTitle">Script</h1><button class="button ghost" id="undoButton">Undo</button></div>
-      <div class="row"><label class="field-label" for="viewSelect">View</label><select class="input" id="viewSelect" style="width:auto;min-width:200px"></select><button class="button secondary" id="newSceneEditorButton">Add scene</button></div>
+      <div class="row"><button class="button secondary" id="newSceneEditorButton">Add scene</button></div>
     </div>
     <div class="notice" id="editorNotice">Tap a paragraph to edit its text or element type. Use the plus buttons to add paragraphs.</div>
     <div class="paper" id="paragraphList"></div>
@@ -61,7 +61,7 @@ select.input{-webkit-appearance:none;appearance:none;padding-right:44px;backgrou
       <div id="rangeExportFields" class="row" hidden><div class="field" style="flex:1"><label class="field-label" for="rangeStart">From</label><select class="input" id="rangeStart"></select></div><div class="field" style="flex:1"><label class="field-label" for="rangeEnd">Through</label><select class="input" id="rangeEnd"></select></div></div>
       <p class="muted" id="exportHelp"></p><button class="button wide" id="exportButton">Export</button><p class="error-text" id="exportError" role="alert"></p>
     </div>
-    <p class="muted small">The Draft v3.4<br>Built for April Korto Quioh</p>
+    <p class="muted small">The Draft v3.5<br>Built for April Korto Quioh</p>
   </div></main>
   <nav class="nav" aria-label="Main"><button data-screen="home" class="active">Home</button><button data-screen="scenes">Scenes</button><button data-screen="editor">Script</button><button data-screen="export">Export</button></nav>
 </div>
@@ -89,7 +89,6 @@ let db = null;
 let docs = [];
 let activeId = null;
 let xmlDoc = null;
-let view = "full";
 let selectedScene = 0;
 let screen = "home";
 let edit = null;
@@ -198,7 +197,6 @@ function bindEvents() {
   $("newButton").onclick = () => openNameModal("new");
   $("addSceneButton").onclick = addScene;
   $("newSceneEditorButton").onclick = addScene;
-  $("viewSelect").onchange = () => { const value=$("viewSelect").value; view=value.startsWith("scene-")?"scene":value; if(view==="scene")selectedScene=Number(value.slice(6)); renderEditor(); };
   $("undoButton").onclick = undoChange;
   $("docList").onclick = onDocListClick;
   $("sceneList").onclick = onSceneListClick;
@@ -239,7 +237,7 @@ async function openDocument(id, navigate) {
   const doc = docs.find(d => d.id === id);
   if (!doc) return;
   try { xmlDoc = parseFDX(doc.xml); } catch (err) { alert("Could not open " + doc.name + ": " + errorMessage(err)); return; }
-  activeId = id; selectedScene = 0; view = sceneSections().length ? "scene" : "full"; undo = [];
+  activeId = id; selectedScene = 0; undo = [];
   localStorage.setItem("the_draft_active_id", id);
   renderAll();
   if (navigate) showScreen("editor");
@@ -347,32 +345,32 @@ function renderScenes() {
 }
 function onSceneListClick(e) {
   const b = e.target.closest("button[data-scene]"); if (!b) return;
-  selectedScene = Number(b.dataset.scene); view = "scene"; showScreen("editor");
+  selectedScene = Number(b.dataset.scene);
+  const section = sceneSections()[selectedScene];
+  showScreen("editor");
+  if (section) requestAnimationFrame(() => {
+    const target = $("paragraphList").querySelector('.paragraph[data-area="content"][data-index="' + section.start + '"]');
+    target?.scrollIntoView({block:"start"});
+  });
 }
 function renderEditor() {
   const doc = active(); const list = $("paragraphList"); list.replaceChildren();
   $("editorTitle").textContent = doc ? doc.name.replace(/\.fdx$/i,"") : "Script";
   $("newSceneEditorButton").disabled = !doc; $("undoButton").disabled = !undo.length;
-  const select = $("viewSelect"); select.replaceChildren();
   if (!doc) { list.innerHTML = '<div class="empty">Open a script on Home to edit it.</div>'; return; }
-  const sections = sceneSections();
-  const options = [["full","Full script"]];
-  if (titleParagraphs().length) options.push(["title","Title page"]);
-  sections.forEach((sec,i) => options.push(["scene-"+i,sec.label]));
-  for (const [value,label] of options) { const op = new Option(label,value); select.add(op); }
-  const value = view === "scene" ? "scene-"+Math.min(selectedScene,sections.length-1) : view;
-  select.value = options.some(o => o[0]===value) ? value : "full";
-  view = select.value.startsWith("scene-") ? "scene" : select.value;
-  if (view === "scene") selectedScene = Number(select.value.split("-")[1]);
-  $("editorNotice").textContent = view === "title" ? "Title page text is editable here. The original FDX title page layout remains in the exported file." : "Tap a paragraph to edit its text or element type. Use the plus buttons to add paragraphs.";
-  const ps = view === "title" ? titleParagraphs() : paragraphs();
-  let start=0,end=ps.length-1,area=view === "title"?"title":"content";
-  if (view === "scene" && sections[selectedScene]) { start=sections[selectedScene].start; end=sections[selectedScene].end; }
-  if (view === "full" && titleParagraphs().length) {
-    const note = document.createElement("p"); note.className="muted"; note.textContent="Title page available in the View menu."; list.append(note);
+  $("editorNotice").textContent = "Tap a paragraph to edit its text or element type. Use the plus buttons to add paragraphs.";
+  const title = titleParagraphs();
+  if (title.length) {
+    const heading = document.createElement("h2"); heading.className="editor-section-heading"; heading.textContent="Title page"; list.append(heading);
+    appendEditorParagraphs(list,title,"title");
+    const scriptHeading = document.createElement("h2"); scriptHeading.className="editor-section-heading"; scriptHeading.textContent="Script"; list.append(scriptHeading);
   }
-  if (end < start) { const n = document.createElement("div"); n.className="empty"; n.textContent="No paragraphs here yet. Add one below."; list.append(n); }
-  for(let i=start;i<=end;i++) {
+  const ps = paragraphs();
+  if (!ps.length) { const n = document.createElement("div"); n.className="empty"; n.textContent="No paragraphs here yet. Add a scene or paragraph below."; list.append(n); }
+  appendEditorParagraphs(list,ps,"content");
+}
+function appendEditorParagraphs(list,ps,area) {
+  for(let i=0;i<ps.length;i++) {
     const p=ps[i]; if (!p) continue;
     const b=document.createElement("button"); b.className="paragraph "+typeOf(p).toLowerCase().replace(/[^a-z]+/g,"-")+(textOf(p).trim()?"":" blank");
     b.dataset.area=area; b.dataset.index=i; b.setAttribute("aria-label","Edit "+typeOf(p)+" paragraph");
@@ -381,7 +379,7 @@ function renderEditor() {
     b.append(t,x); list.append(b);
     const plus=document.createElement("button"); plus.className="add-line"; plus.dataset.addAfter=i; plus.dataset.area=area; plus.textContent="+ Add paragraph here"; list.append(plus);
   }
-  if (end < start || !ps.length) {
+  if (!ps.length) {
     const plus=document.createElement("button"); plus.className="add-line"; plus.dataset.addAfter=-1; plus.dataset.area=area; plus.textContent="+ Add paragraph"; list.append(plus);
   }
 }
@@ -474,9 +472,8 @@ function deleteParagraph() {
 }
 function addScene() {
   if (!active()) return;
-  const ps=paragraphs(); const sections=sceneSections();
-  let after=ps.length-1;
-  if (screen==="editor"&&view==="scene"&&sections[selectedScene]) after=sections[selectedScene].end;
+  const ps=paragraphs();
+  const after=ps.length-1;
   edit={area:"content",index:after,isNew:true};
   openEdit(edit); $("elementType").value="Scene Heading"; $("editTitle").textContent="Add scene"; $("elementText").placeholder="INT. LOCATION - DAY";
 }
@@ -490,7 +487,7 @@ function renderExport() {
   const sections=sceneSections();
   const sets=["sceneExportSelect","rangeStart","rangeEnd"].map($);
   sets.forEach((select,j)=>{const old=select.value; select.replaceChildren(); sections.forEach((sec,i)=>select.add(new Option((i+1)+". "+sec.label,i))); if (Array.from(select.options).some(o=>o.value===old))select.value=old; else if(j===2&&sections.length)select.value=String(sections.length-1);});
-  if (sets[0].options.length && view==="scene") sets[0].value=String(Math.min(selectedScene,sections.length-1));
+  if (sets[0].options.length) sets[0].value=String(Math.min(selectedScene,sections.length-1));
   $("scopeSelect").querySelectorAll("option").forEach(o=>o.disabled=o.value!=="full"&&!sections.length);
   if (!sections.length) $("scopeSelect").value="full";
   updateExportFields();
